@@ -1,5 +1,7 @@
 public class Main {
     public static void main (String[] args){
-        System.out.println("Hello World");
+
+        Graf g = new Graf();
+        g.addNode(1);
     }
 }

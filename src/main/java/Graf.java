@@ -683,6 +683,11 @@ class Graf {
 
     }
 
+    public void printNodeTime(){
+        for (Node node : getAllNodes()) {
+            System.out.println(" [ " + node.getNumber() + "] " + "E : " + node.getEarliestTime() + " / L :" + node.getLatestTime() + "\n");
+        }
+    }
 
     /**
      * <b>Function toDotString</b>

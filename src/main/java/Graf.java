@@ -13,11 +13,12 @@ import java.lang.Math;
 
 /**
  * The class Graf is used to represent a directed graph
- * A Graf have 2 attributs : 
+ * A Graf have 2 attributs :
  * <ul>
  * <li>adjList is a Map< Node, SortedSet< Edge >> which represent de adjacency list of the graph</li>
  * <li>name of the graph (String)</li>
  * </ul>
+ *
  * @author Cynthia Maillard et Jérémy Thiébaud
  * @version version 1.0
  */
@@ -30,29 +31,31 @@ class Graf {
 
     protected Node startNode;
 
+    protected int totalTime;
+
     /**
-     * <b>Builder empty graf</b> 
-     *
+     * <b>Builder empty graf</b>
+     * <p>
      * Create an empty graf with name "Graf"
      */
 
-    public Graf(){
+    public Graf() {
         this("Graf");
     }
 
     /**
-     * <b>Builder empty graf with name</b> 
-     *
+     * <b>Builder empty graf with name</b>
+     * <p>
      * Create an empty graf with the name chosen
      *
-     * @param name
-     *     name of the graf 
+     * @param name name of the graf
      */
     public Graf(String name) {
         this.name = name;
         this.adjList = new TreeMap<Node, SortedSet<Edge>>();
         this.startNode = new Node(1);
         addNode(startNode);
+        this.totalTime = 0;
     }
 
     /**
@@ -63,7 +66,7 @@ class Graf {
      * @param args
      *     List of int which represent the adjacency array of the graf
      */
-    public Graf(int... args){
+    /*public Graf(int... args){
         this();
         int nbNode = 1;
         for (int i = 0; i < args.length ; i++) {
@@ -74,58 +77,54 @@ class Graf {
                 addEdge(new Node(nbNode), new Node(args[i]));
             }
         }
-    }
+    }*/
 
     /**
-     * <b>Function setName</b> 
+     * <b>Function setName</b>
+     * <p>
+     * Update the name of the graf
      *
-     * Update the name of the graf 
-     *
-     * @param name
-     *     The new name of the graf
+     * @param name The new name of the graf
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * <b>Function addNode with Node in parameter</b> 
+     * <b>Function addNode with Node in parameter</b>
+     * <p>
+     * add the node in parameter into the graf
      *
-     * add the node in parameter into the graf 
-     *
-     * @param n
-     *     Is the Node to add into the graf
+     * @param n Is the Node to add into the graf
      */
-    public void addNode(Node n){
+    public void addNode(Node n) {
         adjList.put(n, new TreeSet<Edge>());
     }
 
     /**
-     * <b>Function addNode with the nnode's number in parameter</b> 
+     * <b>Function addNode with the nnode's number in parameter</b>
+     * <p>
+     * create a node with the number in parameter and add it into the graf
      *
-     * create a node with the number in parameter and add it into the graf 
-     *
-     * @param nbNode
-     *     Is the node's number to add into the graf
+     * @param nbNode Is the node's number to add into the graf
      */
-    public void addNode(int nbNode){
+    public void addNode(int nbNode) {
         Node n = new Node(nbNode);
         addNode(n);
     }
 
     /**
-     * <b>Function removeNode with the Node in parameter</b> 
+     * <b>Function removeNode with the Node in parameter</b>
+     * <p>
+     * remove the Node in parameter from the graf
      *
-     * remove the Node in parameter from the graf 
-     *
-     * @param n
-     *     Is the Node to remove from the graf
+     * @param n Is the Node to remove from the graf
      */
-    public void removeNode(Node n){
-        if(adjList.containsKey(n)){
+    public void removeNode(Node n) {
+        if (adjList.containsKey(n)) {
             List<Edge> edges = getIncidentEdges(n);
 
-            for(Edge e : edges) {
+            for (Edge e : edges) {
                 removeEdge(e);
             }
 
@@ -135,28 +134,24 @@ class Graf {
     }
 
     /**
-     * <b>Function removeNode with the node's number in parameter</b> 
+     * <b>Function removeNode with the node's number in parameter</b>
+     * <p>
+     * remove the node with the number in parameter from the graf
      *
-     * remove the node with the number in parameter from the graf 
-     *
-     * @param nbNode
-     *     Is the node's number to remove from the graf
+     * @param nbNode Is the node's number to remove from the graf
      */
-    public void removeNode(int nbNode){
+    public void removeNode(int nbNode) {
         Node n = new Node(nbNode);
         removeNode(n);
     }
 
     /**
-     * <b>Function addEdge with Nodes in parameter</b> 
-     *
+     * <b>Function addEdge with Nodes in parameter</b>
+     * <p>
      * create an edge between 2 nodes in the graph
      *
-     * @param nFrom
-     *     Is the Node where the edge begin
-     *
-     * @param nTo
-     *     Is the Node where the edge end
+     * @param nFrom Is the Node where the edge begin
+     * @param nTo   Is the Node where the edge end
      */
     public void addEdge(Node nFrom, Node nTo) {
 
@@ -173,17 +168,13 @@ class Graf {
     }
 
     /**
-     * <b>Function addEdge with weight and with Nodes in parameter</b> 
-     *
+     * <b>Function addEdge with weight and with Nodes in parameter</b>
+     * <p>
      * create an edge weighted between 2 nodes in the graph
      *
-     * @param nFrom
-     *     Is the Node where the edge begin
-     *
-     * @param nTo
-     *     Is the Node where the edge end
-     * @param weight
-     *		Is the weight of the edge
+     * @param nFrom  Is the Node where the edge begin
+     * @param nTo    Is the Node where the edge end
+     * @param weight Is the weight of the edge
      */
     public void addEdge(Node nFrom, Node nTo, int weight) {
 
@@ -200,34 +191,28 @@ class Graf {
     }
 
     /**
-     * <b>Function removeEdge with Nodes in parameter</b> 
-     *
+     * <b>Function removeEdge with Nodes in parameter</b>
+     * <p>
      * delete the edge between 2 nodes from the graph
      *
-     * @param nFrom
-     *     Is the Node where the edge begin
-     *
-     * @param nTo
-     *     Is the Node where the edge end
+     * @param nFrom Is the Node where the edge begin
+     * @param nTo   Is the Node where the edge end
      */
     public void removeEdge(Node nFrom, Node nTo) {
-        if(adjList.containsKey(nFrom) && adjList.get(nFrom).contains(new Edge(nFrom, nTo))){
+        if (adjList.containsKey(nFrom) && adjList.get(nFrom).contains(new Edge(nFrom, nTo))) {
             adjList.get(nFrom).remove(new Edge(nFrom, nTo));
         }
     }
 
     /**
-     * <b>Function removeEdge with nodes numbers in parameter</b> 
-     *
+     * <b>Function removeEdge with nodes numbers in parameter</b>
+     * <p>
      * delete the edge between 2 nodes from the graph
      *
-     * @param nbNodeFrom
-     *     Is the node's number where the edge begin
-     *
-     * @param nbNodeTo
-     *     Is the node's number of the node where the edge end
+     * @param nbNodeFrom Is the node's number where the edge begin
+     * @param nbNodeTo   Is the node's number of the node where the edge end
      */
-    public void removeEdge(int nbNodeFrom, int nbNodeTo){
+    public void removeEdge(int nbNodeFrom, int nbNodeTo) {
         Node nFrom = new Node(nbNodeFrom);
         Node nTo = new Node(nbNodeTo);
 
@@ -235,26 +220,23 @@ class Graf {
     }
 
     /**
-     * <b>Function removeEdge with the edge in parameter</b> 
-     *
+     * <b>Function removeEdge with the edge in parameter</b>
+     * <p>
      * delete the edge in parameter
      *
-     * @param e
-     *     Is the Edge which will be delete from the graph
+     * @param e Is the Edge which will be delete from the graph
      */
-    public void removeEdge(Edge e){
+    public void removeEdge(Edge e) {
         removeEdge(e.getNodeFrom(), e.getNodeTo());
     }
 
     /**
-     * <b>Function getSuccessors with Nodes in parameter</b> 
-     *
+     * <b>Function getSuccessors with Nodes in parameter</b>
+     * <p>
      * Get the list of nodes which success to the node in parameter
      *
-     * @param n
-     *     Is the Node that we want all successors
-     *
-     * @return list of successors 
+     * @param n Is the Node that we want all successors
+     * @return list of successors
      */
     public List<Node> getSuccessors(Node n) {
         List<Node> listSuccessors = new ArrayList<Node>();
@@ -267,34 +249,30 @@ class Graf {
     }
 
     /**
-     * <b>Function getSuccessors with the number of node in parameter</b> 
-     *
+     * <b>Function getSuccessors with the number of node in parameter</b>
+     * <p>
      * Get the list of nodes which success to the node with the number in parameter
      *
-     * @param nbNode
-     *     Is the node's number that we want all successors
-     *
-     * @return list of successors 
+     * @param nbNode Is the node's number that we want all successors
+     * @return list of successors
      */
-    public List<Node> getSuccessors(int nbNode){
+    public List<Node> getSuccessors(int nbNode) {
         Node n = new Node(nbNode);
         return getSuccessors(n);
     }
 
     /**
-     * <b>Function getOutEdges with the Node in parameter</b> 
-     *
+     * <b>Function getOutEdges with the Node in parameter</b>
+     * <p>
      * Get the list of all edges which begin from the node in parameter
      *
-     * @param n
-     *     Is the Node from which we find the list of edges
-     *
-     * @return list of out edges 
+     * @param n Is the Node from which we find the list of edges
+     * @return list of out edges
      */
     public List<Edge> getOutEdges(Node n) {
         List<Edge> listE = new ArrayList<>();
 
-        for(Edge e : adjList.get(n)){
+        for (Edge e : adjList.get(n)) {
             listE.add(e);
         }
 
@@ -302,29 +280,25 @@ class Graf {
     }
 
     /**
-     * <b>Function getOutEdges with the number of the node in parameter</b> 
-     *
+     * <b>Function getOutEdges with the number of the node in parameter</b>
+     * <p>
      * Get the list of all edges which begin from the node with the number in parameter
      *
-     * @param nbNode
-     *     Is the node's number from which we find the list of edges
-     *
-     * @return list of out edges 
+     * @param nbNode Is the node's number from which we find the list of edges
+     * @return list of out edges
      */
-    public List<Edge> getOutEdges(int nbNode){
+    public List<Edge> getOutEdges(int nbNode) {
         Node n = new Node(nbNode);
         return getOutEdges(n);
     }
 
     /**
-     * <b>Function getInEdges with the Node in parameter</b> 
-     *
+     * <b>Function getInEdges with the Node in parameter</b>
+     * <p>
      * Get the list of all edges which come into the node in parameter
      *
-     * @param n
-     *     Is the Node where which we find the list of edges
-     *
-     * @return list of in edges 
+     * @param n Is the Node where which we find the list of edges
+     * @return list of in edges
      */
     public List<Edge> getInEdges(Node n) {
         List<Edge> listE = new ArrayList<>();
@@ -340,28 +314,24 @@ class Graf {
     }
 
     /**
-     * <b>Function getInEdges with the number of the node in parameter</b> 
-     *
+     * <b>Function getInEdges with the number of the node in parameter</b>
+     * <p>
      * Get the list of all edges which come into the node with the number in parameter
      *
-     * @param nbNode
-     *     Is the node's number where which we find the list of edges
-     *
-     * @return list of in edges 
+     * @param nbNode Is the node's number where which we find the list of edges
+     * @return list of in edges
      */
-    public List<Edge> getInEdges(int nbNode){
+    public List<Edge> getInEdges(int nbNode) {
         Node n = new Node(nbNode);
         return getInEdges(n);
     }
 
     /**
-     * <b>Function getIncidentEdges with the Node in parameter</b> 
-     *
+     * <b>Function getIncidentEdges with the Node in parameter</b>
+     * <p>
      * Get the list of all edges which come into and come from the node in parameter
      *
-     * @param n
-     *     Is the Node where which we find the list of edges
-     *
+     * @param n Is the Node where which we find the list of edges
      * @return list of edges from and to the node
      */
     public List<Edge> getIncidentEdges(Node n) {
@@ -370,9 +340,9 @@ class Graf {
         List<Edge> listInEdge = getInEdges(n);
 
         //pour éviter doublons si edge qui boucle sur le même noeud
-        ListIterator<Edge> iter = listInEdge.listIterator()  ;
-        while(iter.hasNext()){
-            if(n.equals(iter.next().getNodeFrom())){
+        ListIterator<Edge> iter = listInEdge.listIterator();
+        while (iter.hasNext()) {
+            if (n.equals(iter.next().getNodeFrom())) {
                 iter.remove();
             }
         }
@@ -383,26 +353,24 @@ class Graf {
     }
 
     /**
-     * <b>Function getIncidentEdges with the number of the node in parameter</b> 
-     *
+     * <b>Function getIncidentEdges with the number of the node in parameter</b>
+     * <p>
      * Get the list of all edges which come into and come from the node with the number in parameter
      *
-     * @param nbNode
-     *     Is the node's number where which we find the list of edges
-     *
+     * @param nbNode Is the node's number where which we find the list of edges
      * @return list of edges from and to the node
      */
-    public List<Edge> getIncidentEdges(int nbNode){
+    public List<Edge> getIncidentEdges(int nbNode) {
         Node n = new Node(nbNode);
         return getIncidentEdges(n);
     }
 
     /**
-     * <b>Function getAllNodes</b> 
-     *
+     * <b>Function getAllNodes</b>
+     * <p>
      * Get the list of all nodes in the graph
      *
-     * @return list of all nodes in the graph 
+     * @return list of all nodes in the graph
      */
     public List<Node> getAllNodes() {
         Set<Node> keys = adjList.keySet();
@@ -411,11 +379,11 @@ class Graf {
     }
 
     /**
-     * <b>Function getAllEdges</b> 
-     *
+     * <b>Function getAllEdges</b>
+     * <p>
      * Get the list of all edges in the graph
      *
-     * @return list of all edges in the graph 
+     * @return list of all edges in the graph
      */
     public List<Edge> getAllEdges() {
         List<Edge> listE = new ArrayList<>();
@@ -430,8 +398,8 @@ class Graf {
 
 
     /**
-     * <b>Function getSuccessorArray</b> 
-     *
+     * <b>Function getSuccessorArray</b>
+     * <p>
      * Get the successor array of the graph
      *
      * @return array of int which represent the successor array of the graph
@@ -447,7 +415,7 @@ class Graf {
             index--;
 
             for (Edge e : adjList.get(n)) {
-                successorArray[index] = e.getNodeTo().getNumber()	;
+                successorArray[index] = e.getNodeTo().getNumber();
                 index--;
             }
         }
@@ -456,8 +424,8 @@ class Graf {
     }
 
     /**
-     * <b>Function getAdjMatrix</b> 
-     *
+     * <b>Function getAdjMatrix</b>
+     * <p>
      * Get the adjacency matrix of the graph
      *
      * @return matrix of int which represent the adjacency matrix of the graph
@@ -482,23 +450,23 @@ class Graf {
     }
 
     /**
-     * <b>Function getReverseGraph</b> 
-     *
+     * <b>Function getReverseGraph</b>
+     * <p>
      * Get the reverse graph of the current graph
      *
      * @return Graf which is the reverse graph of the current graph
      */
-    public Graf getReverseGraph(){
+    public Graf getReverseGraph() {
         Graf gT = new Graf();
         List<Node> listNode = new ArrayList<Node>();
         listNode = getAllNodes();
 
-        for( Node n : listNode){
+        for (Node n : listNode) {
             gT.addNode(n);
         }
 
-        for( Node n : listNode){
-            for( Edge e : adjList.get(n)) {
+        for (Node n : listNode) {
+            for (Edge e : adjList.get(n)) {
                 gT.addEdge(e.getNodeTo(), e.getNodeFrom());
             }
         }
@@ -507,8 +475,8 @@ class Graf {
     }
 
     /**
-     * <b>Function getTransitiveClosure</b> 
-     *
+     * <b>Function getTransitiveClosure</b>
+     * <p>
      * Add all edges needed to create all transitives closures
      *
      * @return Graf with all edge to have the transitive closure of the current graph
@@ -531,7 +499,7 @@ class Graf {
 
             nodesToGoTo.remove(n);
 
-            for(Node nodeToGoTo : nodesToGoTo) {
+            for (Node nodeToGoTo : nodesToGoTo) {
                 g.addEdge(n, nodeToGoTo);
             }
         }
@@ -540,24 +508,22 @@ class Graf {
     }
 
     /**
-     * <b>Function getDFS without parameter</b> 
-     *
+     * <b>Function getDFS without parameter</b>
+     * <p>
      * Call the DFS with the first node of the graph
      *
      * @return List of node sort in order of visit
      */
     public List<Node> getDFS() {
-        return getDFS((Node)adjList.keySet().toArray()[adjList.keySet().size()-1]);
+        return getDFS((Node) adjList.keySet().toArray()[adjList.keySet().size() - 1]);
     }
 
     /**
-     * <b>Function getDFS start node in parameter</b> 
-     *
+     * <b>Function getDFS start node in parameter</b>
+     * <p>
      * Call the DFS recursive function to do the DFS
      *
-     * @param n
-     *		Node to begin the DFS
-     *
+     * @param n Node to begin the DFS
      * @return List of node sort in order of visit
      */
     public List<Node> getDFS(Node n) {
@@ -569,17 +535,13 @@ class Graf {
     }
 
     /**
-     * <b>Function getDFS rec</b> 
-     *
+     * <b>Function getDFS rec</b>
+     * <p>
      * Recursive function to visite all nodes in the graph.
-     * Is the Depth First Search 
+     * Is the Depth First Search
      *
-     * @param n
-     *		Current node visited
-     *
-     * @param listDFS
-     *		List used to add node in order of visit
-     *
+     * @param n       Current node visited
+     * @param listDFS List used to add node in order of visit
      * @return List of node with the lastest node visited at the end
      */
     private void getDFSrec(Node n, List<Node> listDFS) {
@@ -594,24 +556,22 @@ class Graf {
 
 
     /**
-     * <b>Function getBFS without parameter</b> 
-     *
+     * <b>Function getBFS without parameter</b>
+     * <p>
      * Call the BFS with the first node of the graph
      *
      * @return List of node sort in order of visit
      */
     public List<Node> getBFS() {
-        return getBFS((Node)adjList.keySet().toArray()[adjList.keySet().size()-1]);
+        return getBFS((Node) adjList.keySet().toArray()[adjList.keySet().size() - 1]);
     }
 
     /**
-     * <b>Function getBFS start node in parameter</b> 
-     *
+     * <b>Function getBFS start node in parameter</b>
+     * <p>
      * Call the BFS recursive function to do the BFS
      *
-     * @param n
-     *		Node to begin the BFS
-     *
+     * @param n Node to begin the BFS
      * @return List of node sort in order of visit
      */
     public List<Node> getBFS(Node n) {
@@ -624,17 +584,13 @@ class Graf {
     }
 
     /**
-     * <b>Function getBFS rec</b> 
-     *
+     * <b>Function getBFS rec</b>
+     * <p>
      * Recursive function to visite all nodes in the graph.
-     * Is the Breadth First Search 
+     * Is the Breadth First Search
      *
-     * @param n
-     *		Current node visited
-     *
-     * @param listBFS
-     *		List used to add node in order of visit
-     *
+     * @param n       Current node visited
+     * @param listBFS List used to add node in order of visit
      * @return List of node with the lastest node visited at the end
      */
     private void getBFSrec(Node n, List<Node> listBFS) {
@@ -658,22 +614,22 @@ class Graf {
     }
 
 
-    public int getWeightOfEdge(Node nFrom, Node nTo){
+    public int getWeightOfEdge(Node nFrom, Node nTo) {
         List<Edge> listE = getOutEdges(nFrom);
         for (Edge e : listE) {
-           if(nTo.equals(e.getNodeTo())){
-               return e.getWeight();
-           }
+            if (nTo.equals(e.getNodeTo())) {
+                return e.getWeight();
+            }
         }
         return 100;
     }
 
 
-    public void setEarliestTime(){
+    public void setEarliestTime() {
         List<Node> nodeTime = getAllNodes();
         //init
         for (Node node : nodeTime) {
-            if(node.equals(this.startNode)){
+            if (node.equals(this.startNode)) {
                 node.setEarliestTime(0);
             } else {
                 node.setEarliestTime(-1);
@@ -683,12 +639,45 @@ class Graf {
         int distance = 0;
 
         for (Node node : nodeTime) {
+            if (getSuccessors(node) == null) {
+                this.totalTime = node.getEarliestTime();
+            } else {
+                for (Node succ : getSuccessors(node)) {
+                    distance = getWeightOfEdge(node, succ);
+                    if (succ.getEarliestTime() < node.getEarliestTime() + distance) {
+                        succ.setEarliestTime(node.getEarliestTime() + distance);
+                    }
+                }
+
+            }
+
+        }
+
+    }
+
+    public void setLatestTime() {
+        Graf reverseGraf = getReverseGraph();
+
+        List<Node> nodeTime = reverseGraf.getAllNodes();
+        //init
+        for (Node node : nodeTime) {
+            if (node.equals(this.startNode)) {
+                node.setLatestTime(totalTime);
+            } else {
+                node.setLatestTime(totalTime);
+            }
+        }
+
+        int distance = 0;
+
+        for (Node node : nodeTime) {
             for (Node succ : getSuccessors(node)) {
-                distance = getWeightOfEdge(node, succ);
-                if(succ.getEarliestTime() > node.getEarliestTime() + distance || succ.getEarliestTime() ==-1){
-                    succ.setEarliestTime(node.getEarliestTime() + distance);
+                distance =  reverseGraf.getWeightOfEdge(node, succ);
+                if (succ.getLatestTime() > node.getLatestTime() - distance) {
+                    succ.setLatestTime(node.getLatestTime() - distance);
                 }
             }
+
 
         }
 
@@ -696,8 +685,8 @@ class Graf {
 
 
     /**
-     * <b>Function toDotString</b> 
-     *
+     * <b>Function toDotString</b>
+     * <p>
      * Create the dot string from the structure of the graph
      *
      * @return String which represent the content of the file
@@ -715,10 +704,9 @@ class Graf {
     }
 
     /**
-     * <b>Function toDotFile</b> 
-     *
+     * <b>Function toDotFile</b>
+     * <p>
      * Create the dot file from the function toDotString
-     *
      */
     public void toDotFile(String path) {
         try {
@@ -729,26 +717,24 @@ class Graf {
     }
 
     /**
-     * <b>Function createRandomGraf</b> 
-     *
+     * <b>Function createRandomGraf</b>
+     * <p>
      * Create a graph with the number of nodes in parameter
      *
-     * @param nbNode
-     *		How many nodes we want in the graph
-     *
+     * @param nbNode How many nodes we want in the graph
      * @return Graf create randomly
      */
-    public static Graf createRandomGraf(int nbNode){
+    public static Graf createRandomGraf(int nbNode) {
         Graf g = new Graf();
-        for (int i = 0; i < nbNode ; i++ ) {
-            g.addNode(i+1);
+        for (int i = 0; i < nbNode; i++) {
+            g.addNode(i + 1);
         }
 
         int nbRand = 0;
-        for (Node n : g.getAllNodes()){
-            for(Node nLink : g.getAllNodes()){
-                nbRand = (int)(Math.random() * 6);
-                if(nbRand < 2){
+        for (Node n : g.getAllNodes()) {
+            for (Node nLink : g.getAllNodes()) {
+                nbRand = (int) (Math.random() * 6);
+                if (nbRand < 2) {
                     g.addEdge(n, nLink);
                 }
             }
@@ -759,13 +745,11 @@ class Graf {
 
 
     /**
-     * <b>Function equals</b> 
-     *
+     * <b>Function equals</b>
+     * <p>
      * Compare two graph
      *
-     * @param o
-     *		Object which is a graf in this case
-     *
+     * @param o Object which is a graf in this case
      * @return boolean
      */
     @Override
@@ -808,8 +792,8 @@ class Graf {
     }
 
     /**
-     * <b>Function hashCode</b> 
-     *
+     * <b>Function hashCode</b>
+     * <p>
      * Hash the graph
      *
      * @return hash code which represent the graph

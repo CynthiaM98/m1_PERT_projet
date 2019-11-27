@@ -98,8 +98,16 @@ class Graf {
      * @param n Is the Node to add into the graf
      */
     public void addNode(Node n) {
+        if(adjList.size()==1){
+            addEdge(startNode,n, 0);
+        }
         adjList.put(n, new TreeSet<Edge>());
     }
+
+    public Map<Node, SortedSet<Edge>> getAdjList() {
+        return adjList;
+    }
+
 
     /**
      * <b>Function addNode with the nnode's number in parameter</b>
@@ -154,6 +162,7 @@ class Graf {
      * @param nTo   Is the Node where the edge end
      */
     public void addEdge(Node nFrom, Node nTo) {
+
 
         if (!adjList.containsKey(nTo)) {
             adjList.put(nTo, new TreeSet<Edge>());
@@ -626,6 +635,7 @@ class Graf {
 
 
     public void setEarliestTime() {
+        System.out.println("TEST");
         List<Node> nodeTime = getAllNodes();
         //init
         for (Node node : nodeTime) {
@@ -656,6 +666,7 @@ class Graf {
     }
 
     public void setLatestTime() {
+        System.out.println("TEST");
         Graf reverseGraf = getReverseGraph();
 
         List<Node> nodeTime = reverseGraf.getAllNodes();
@@ -673,6 +684,7 @@ class Graf {
         for (Node node : nodeTime) {
             for (Node succ : getSuccessors(node)) {
                 distance =  reverseGraf.getWeightOfEdge(node, succ);
+                System.out.println(distance);
                 if (succ.getLatestTime() > node.getLatestTime() - distance) {
                     succ.setLatestTime(node.getLatestTime() - distance);
                 }
@@ -680,6 +692,9 @@ class Graf {
 
 
         }
+
+        Graf g=reverseGraf.getReverseGraph();
+        this.adjList=g.getAdjList();
 
     }
 

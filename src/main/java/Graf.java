@@ -61,9 +61,7 @@ class Graf {
     /**
      * <b>Builder graf</b> 
      *
-     * Create a graf with the adjacency array given 
-     *
-     * @param args
+     * Create a graf with the adjacency array given
      *     List of int which represent the adjacency array of the graf
      */
     /*public Graf(int... args){
@@ -78,6 +76,11 @@ class Graf {
             }
         }
     }*/
+
+
+    public Map<Node, SortedSet<Edge>> getAdjList() {
+        return adjList;
+    }
 
     /**
      * <b>Function setName</b>
@@ -104,9 +107,7 @@ class Graf {
         adjList.put(n, new TreeSet<Edge>());
     }
 
-    public Map<Node, SortedSet<Edge>> getAdjList() {
-        return adjList;
-    }
+
 
 
     /**
@@ -476,7 +477,8 @@ class Graf {
 
         for (Node n : listNode) {
             for (Edge e : adjList.get(n)) {
-                gT.addEdge(e.getNodeTo(), e.getNodeFrom());
+                //System.out.println(e.getWeight());
+                gT.addEdge(e.getNodeTo(), e.getNodeFrom(), e.getWeight());
             }
         }
 
@@ -627,64 +629,63 @@ class Graf {
         List<Edge> listE = getOutEdges(nFrom);
         for (Edge e : listE) {
             if (nTo.equals(e.getNodeTo())) {
+                //System.out.println(e.getWeight());
                 return e.getWeight();
             }
         }
-        return 100;
+        return 0;
     }
 
 
-    public void setEarliestTime() {
-        System.out.println("TEST");
+    public void setEarliestTimeNode() {
         List<Node> nodeTime = getAllNodes();
         //init
         for (Node node : nodeTime) {
             if (node.equals(this.startNode)) {
                 node.setEarliestTime(0);
             } else {
-                node.setEarliestTime(-1);
+                node.setEarliestTime(-0xfffffe);
             }
         }
 
-        int distance = 0;
+        int nbIter = 1;
+        boolean modified = true;
 
-        for (Node node : nodeTime) {
-            if (getSuccessors(node) == null) {
-                this.totalTime = node.getEarliestTime();
-            } else {
-                for (Node succ : getSuccessors(node)) {
-                    distance = getWeightOfEdge(node, succ);
-                    if (succ.getEarliestTime() < node.getEarliestTime() + distance) {
-                        succ.setEarliestTime(node.getEarliestTime() + distance);
-                    }
+
+        while (nbIter < nodeTime.size() + 1 && modified){
+            modified = false;
+            for (Edge e : getAllEdges()) {
+                if (e.getNodeTo().getEarliestTime() < e.getNodeFrom().getEarliestTime() + getWeightOfEdge(e.getNodeFrom(), e.getNodeTo())) {
+
+                    e.getNodeTo().setEarliestTime(e.getNodeFrom().getEarliestTime() + getWeightOfEdge(e.getNodeFrom(), e.getNodeTo()));
+                    modified = true;
                 }
-
+                if(totalTime < e.getNodeTo().getEarliestTime()){
+                    totalTime = e.getNodeTo().getEarliestTime();
+                }
             }
-
+            nbIter++;
         }
+
+
+        System.out.println(this.totalTime);
 
     }
 
-    public void setLatestTime() {
-        System.out.println("TEST");
+    public void setLatestTimeNode() {
         Graf reverseGraf = getReverseGraph();
 
         List<Node> nodeTime = reverseGraf.getAllNodes();
         //init
         for (Node node : nodeTime) {
-            if (node.equals(this.startNode)) {
-                node.setLatestTime(totalTime);
-            } else {
-                node.setLatestTime(totalTime);
-            }
+            node.setLatestTime(totalTime);
         }
 
         int distance = 0;
 
         for (Node node : nodeTime) {
-            for (Node succ : getSuccessors(node)) {
+            for (Node succ : reverseGraf.getSuccessors(node)) {
                 distance =  reverseGraf.getWeightOfEdge(node, succ);
-                System.out.println(distance);
                 if (succ.getLatestTime() > node.getLatestTime() - distance) {
                     succ.setLatestTime(node.getLatestTime() - distance);
                 }

@@ -37,12 +37,10 @@ public class Main {
         g.addEdge(n6,n8,1);
         g.addEdge(n7,n10,1);
         g.addEdge(n8,n9,3);
-        g.addEdge(n9,n10,3);
+        g.addEdge(n9,n10,2);
         g.addEdge(n10,n11,1);
-        g.setEarliestTime();
-        System.out.println("TEST");
-        System.out.println("TEST");
-        g.setLatestTime();
+        g.setEarliestTimeNode();
+        g.setLatestTimeNode();
         g.printNodeTime();
     }
 }

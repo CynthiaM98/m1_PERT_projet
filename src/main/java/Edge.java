@@ -25,10 +25,10 @@ class Edge implements Comparable<Edge>{
 
     public String toString(){
         if (!isWeighted) {
-            return nodeFrom.getNumber() + " -> " + nodeTo.getNumber();
+            return nodeFrom.getIdent() + " -> " + nodeTo.getIdent();
         }
 
-        return nodeFrom.getNumber() + " -> " + nodeTo.getNumber() + "[label=\"" + weight + "\"]";
+        return nodeFrom.getIdent() + " -> " + nodeTo.getIdent() + "[label=\"" + weight + "\"]";
     }
 
     public Node getNodeFrom(){
@@ -47,16 +47,10 @@ class Edge implements Comparable<Edge>{
     @Override
     public int compareTo(Edge edge) {
 
-        if (edge.getNodeFrom().getNumber() < this.getNodeFrom().getNumber()) {
-            return -1;
-        }
 
-        if (edge.getNodeFrom().getNumber() == this.getNodeFrom().getNumber()) {
-            if (edge.getNodeTo().getNumber() < this.getNodeTo().getNumber()) {
-                return -1;
-            }
+        if (edge.getNodeFrom().getIdent() == this.getNodeFrom().getIdent()) {
 
-            if (edge.getNodeTo().getNumber() == this.getNodeTo().getNumber()) {
+            if (edge.getNodeTo().getIdent() == this.getNodeTo().getIdent()) {
                 return 0;
             }
 

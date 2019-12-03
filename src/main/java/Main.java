@@ -1,46 +1,94 @@
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Main {
-    public static void main (String[] args){
-        System.out.println("TEST");
-        Graf g = new Graf();
-        Node n1=new Node(2);
-        Node n2=new Node(3);
-        Node n3=new Node(4);
-        Node n4=new Node(5);
-        Node n5=new Node(6);
-        Node n6=new Node(7);
-        Node n7=new Node(8);
-        Node n8=new Node(9);
-        Node n9=new Node(10);
-        Node n10=new Node(11);
-        Node n11=new Node(12);
-        g.addNode(n1);
-        g.addNode(n2);
-        g.addNode(n3);
-        g.addNode(n4);
-        g.addNode(n5);
-        g.addNode(n6);
-        g.addNode(n7);
-        g.addNode(n8);
-        g.addNode(n9);
-        g.addNode(n10);
-        g.addNode(n11);
-        g.addEdge(n1,n2,7);
-        g.addEdge(n1,n4,7);
-        g.addEdge(n2,n3,3);
-        g.addEdge(n3,n7,1);
-        g.addEdge(n3,n5,1);
-        g.addEdge(n3,n6,1);
-        g.addEdge(n4,n7,8);
-        g.addEdge(n4,n5,8);
-        g.addEdge(n4,n6,8);
-        g.addEdge(n5,n10,2);
-        g.addEdge(n6,n8,1);
-        g.addEdge(n7,n10,1);
-        g.addEdge(n8,n9,3);
-        g.addEdge(n9,n10,2);
-        g.addEdge(n10,n11,1);
+    public static void main (String[] args) throws IOException {
+
+        ArrayList<String> listConstruGraph = readFile();
+        Graf g = construGraf(listConstruGraph);
+
+        System.out.println(g.toDotString());
         g.setEarliestTimeNode();
         g.setLatestTimeNode();
         g.printNodeTime();
+
+
+
+
     }
+
+    public static ArrayList<String> readFile() throws IOException {
+        ArrayList<String> listInstr = new ArrayList<String>();
+        BufferedReader br = new BufferedReader(new FileReader("./src/main/java/testCours.txt"));
+        String line;
+        while ((line = br.readLine()) != null) {
+            listInstr.add(line);
+        }
+        br.close();
+
+        return listInstr;
+    }
+
+    public static ArrayList<String> readLine(String line) {
+        String[] values = line.split(",");
+        return new ArrayList(Arrays.asList(values));
+    }
+
+    public static ArrayList<String> supprSpace(ArrayList<String> listString){
+        ArrayList<String> listWithoutSpace = new ArrayList<String>();
+        for (String s : listString) {
+            listWithoutSpace.add(s.replaceAll("\\s", ""));
+        }
+        return listWithoutSpace;
+    }
+
+    public static Graf construGraf(ArrayList<String> listInstr){
+
+        Graf g = new Graf();
+        for (String s : listInstr) {
+            ArrayList<String> instr = supprSpace(readLine(s));
+            String identNode = instr.get(0);
+            Node n = new Node(identNode, instr.get(1)); //create the node
+            n.setTimeExec(Integer.parseInt(instr.get(2)));
+            g.addNode(n);
+            //System.out.println(g.getNode(identNode).toString());
+
+        }
+
+        for (String s : listInstr){
+            ArrayList<String> instr = supprSpace(readLine(s));
+            String identNode = instr.get(0);
+            if(instr.get(3).equals("-")){
+                System.out.println(identNode);
+                g.addEdge(g.startNode, g.getNode(identNode), 0);
+
+            }else{
+                for (int i = 3; i< instr.size(); i++){
+                    //System.out.println(identNode);
+                    g.addEdge(g.getNode(instr.get(i)), g.getNode(identNode), g.getNode(instr.get(i)).getTimeExec());
+                }
+            }
+        }
+
+        System.out.println(g.toDotString());
+
+        g.addEndNode();
+        return addEndEdge(g);
+    }
+
+    public static Graf addEndEdge(Graf g){
+        for (Node n: g.getAllNodes()) {
+            System.out.println(n.toString());
+            List<Edge> listE = g.getOutEdges(n);
+            if(listE.isEmpty() && n!=g.endNode){
+                System.out.println(n.toString());
+                g.addEdge(n, g.endNode, n.getTimeExec());
+            }
+        }
+        return g;
+    }
+
+
 }

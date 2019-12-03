@@ -30,6 +30,7 @@ class Graf {
     protected String name;
 
     protected Node startNode;
+    protected Node endNode;
 
     protected int totalTime;
 
@@ -53,7 +54,7 @@ class Graf {
     public Graf(String name) {
         this.name = name;
         this.adjList = new TreeMap<Node, SortedSet<Edge>>();
-        this.startNode = new Node(1);
+        this.startNode = new Node("*");
         addNode(startNode);
         this.totalTime = 0;
     }
@@ -101,24 +102,25 @@ class Graf {
      * @param n Is the Node to add into the graf
      */
     public void addNode(Node n) {
-        if(adjList.size()==1){
-            addEdge(startNode,n, 0);
-        }
         adjList.put(n, new TreeSet<Edge>());
     }
 
 
+    public void addEndNode(){
+        this.endNode = new Node("~");
+        addNode(endNode);
+    }
 
 
     /**
      * <b>Function addNode with the nnode's number in parameter</b>
      * <p>
-     * create a node with the number in parameter and add it into the graf
+     * create a node with the ident in parameter and add it into the graf
      *
-     * @param nbNode Is the node's number to add into the graf
+     * @param idNode Is the node's ident to add into the graf
      */
-    public void addNode(int nbNode) {
-        Node n = new Node(nbNode);
+    public void addNode(String idNode) {
+        Node n = new Node(idNode);
         addNode(n);
     }
 
@@ -147,11 +149,20 @@ class Graf {
      * <p>
      * remove the node with the number in parameter from the graf
      *
-     * @param nbNode Is the node's number to remove from the graf
+     * @param idNode Is the node's number to remove from the graf
      */
-    public void removeNode(int nbNode) {
-        Node n = new Node(nbNode);
+    public void removeNode(String idNode) {
+        Node n = new Node(idNode);
         removeNode(n);
+    }
+
+    public Node getNode(String idNode){
+        for (Node n : adjList.keySet()) {
+            if(n.getIdent() == idNode){
+                return n;
+            }
+        }
+        return new Node(idNode);
     }
 
     /**
@@ -219,12 +230,12 @@ class Graf {
      * <p>
      * delete the edge between 2 nodes from the graph
      *
-     * @param nbNodeFrom Is the node's number where the edge begin
-     * @param nbNodeTo   Is the node's number of the node where the edge end
+     * @param idNodeFrom Is the node's number where the edge begin
+     * @param idNodeTo   Is the node's number of the node where the edge end
      */
-    public void removeEdge(int nbNodeFrom, int nbNodeTo) {
-        Node nFrom = new Node(nbNodeFrom);
-        Node nTo = new Node(nbNodeTo);
+    public void removeEdge(String idNodeFrom, String idNodeTo) {
+        Node nFrom = new Node(idNodeFrom);
+        Node nTo = new Node(idNodeTo);
 
         removeEdge(nFrom, nTo);
     }
@@ -263,11 +274,11 @@ class Graf {
      * <p>
      * Get the list of nodes which success to the node with the number in parameter
      *
-     * @param nbNode Is the node's number that we want all successors
+     * @param idNode Is the node's number that we want all successors
      * @return list of successors
      */
-    public List<Node> getSuccessors(int nbNode) {
-        Node n = new Node(nbNode);
+    public List<Node> getSuccessors(String idNode) {
+        Node n = new Node(idNode);
         return getSuccessors(n);
     }
 
@@ -281,8 +292,9 @@ class Graf {
      */
     public List<Edge> getOutEdges(Node n) {
         List<Edge> listE = new ArrayList<>();
-
+        System.out.println(n);
         for (Edge e : adjList.get(n)) {
+            System.out.println(e.toString());
             listE.add(e);
         }
 
@@ -294,11 +306,11 @@ class Graf {
      * <p>
      * Get the list of all edges which begin from the node with the number in parameter
      *
-     * @param nbNode Is the node's number from which we find the list of edges
+     * @param idNode Is the node's number from which we find the list of edges
      * @return list of out edges
      */
-    public List<Edge> getOutEdges(int nbNode) {
-        Node n = new Node(nbNode);
+    public List<Edge> getOutEdges(String idNode) {
+        Node n = new Node(idNode);
         return getOutEdges(n);
     }
 
@@ -328,11 +340,11 @@ class Graf {
      * <p>
      * Get the list of all edges which come into the node with the number in parameter
      *
-     * @param nbNode Is the node's number where which we find the list of edges
+     * @param idNode Is the node's number where which we find the list of edges
      * @return list of in edges
      */
-    public List<Edge> getInEdges(int nbNode) {
-        Node n = new Node(nbNode);
+    public List<Edge> getInEdges(String idNode) {
+        Node n = new Node(idNode);
         return getInEdges(n);
     }
 
@@ -367,11 +379,11 @@ class Graf {
      * <p>
      * Get the list of all edges which come into and come from the node with the number in parameter
      *
-     * @param nbNode Is the node's number where which we find the list of edges
+     * @param idNode Is the node's number where which we find the list of edges
      * @return list of edges from and to the node
      */
-    public List<Edge> getIncidentEdges(int nbNode) {
-        Node n = new Node(nbNode);
+    public List<Edge> getIncidentEdges(String idNode) {
+        Node n = new Node(idNode);
         return getIncidentEdges(n);
     }
 
@@ -407,57 +419,8 @@ class Graf {
     }
 
 
-    /**
-     * <b>Function getSuccessorArray</b>
-     * <p>
-     * Get the successor array of the graph
-     *
-     * @return array of int which represent the successor array of the graph
-     */
-    public int[] getSuccessorArray() {
-        int[] successorArray = new int[getAllEdges().size() + adjList.size()];
 
-        int index = successorArray.length - 1;
 
-        for (Node n : adjList.keySet()) {
-
-            successorArray[index] = 0;
-            index--;
-
-            for (Edge e : adjList.get(n)) {
-                successorArray[index] = e.getNodeTo().getNumber();
-                index--;
-            }
-        }
-
-        return successorArray;
-    }
-
-    /**
-     * <b>Function getAdjMatrix</b>
-     * <p>
-     * Get the adjacency matrix of the graph
-     *
-     * @return matrix of int which represent the adjacency matrix of the graph
-     */
-    public int[][] getAdjMatrix() {
-        int[][] adjMatrix = new int[adjList.size()][adjList.size()];
-
-        for (int i = 0; i < adjList.size(); i++) {
-            for (int j = 0; j < adjList.size(); j++) {
-                adjMatrix[i][j] = 0;
-            }
-        }
-
-        for (Node n : adjList.keySet()) {
-            for (Edge e : adjList.get(n)) {
-                adjMatrix[n.getNumber() - 1][e.getNodeTo().getNumber() - 1] = 1;
-            }
-        }
-
-        return adjMatrix;
-
-    }
 
     /**
      * <b>Function getReverseGraph</b>
@@ -656,7 +619,6 @@ class Graf {
             modified = false;
             for (Edge e : getAllEdges()) {
                 if (e.getNodeTo().getEarliestTime() < e.getNodeFrom().getEarliestTime() + getWeightOfEdge(e.getNodeFrom(), e.getNodeTo())) {
-
                     e.getNodeTo().setEarliestTime(e.getNodeFrom().getEarliestTime() + getWeightOfEdge(e.getNodeFrom(), e.getNodeTo()));
                     modified = true;
                 }
@@ -666,10 +628,7 @@ class Graf {
             }
             nbIter++;
         }
-
-
         System.out.println(this.totalTime);
-
     }
 
     public void setLatestTimeNode() {
@@ -699,9 +658,13 @@ class Graf {
 
     }
 
+    public void getCriticalPath(){
+
+    }
+
     public void printNodeTime(){
         for (Node node : getAllNodes()) {
-            System.out.println(" [ " + node.getNumber() + "] " + "E : " + node.getEarliestTime() + " / L :" + node.getLatestTime() + "\n");
+            System.out.println(" [ " + node.getIdent() + "] " + "E : " + node.getEarliestTime() + " / L :" + node.getLatestTime() + "\n");
         }
     }
 
@@ -735,33 +698,6 @@ class Graf {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * <b>Function createRandomGraf</b>
-     * <p>
-     * Create a graph with the number of nodes in parameter
-     *
-     * @param nbNode How many nodes we want in the graph
-     * @return Graf create randomly
-     */
-    public static Graf createRandomGraf(int nbNode) {
-        Graf g = new Graf();
-        for (int i = 0; i < nbNode; i++) {
-            g.addNode(i + 1);
-        }
-
-        int nbRand = 0;
-        for (Node n : g.getAllNodes()) {
-            for (Node nLink : g.getAllNodes()) {
-                nbRand = (int) (Math.random() * 6);
-                if (nbRand < 2) {
-                    g.addEdge(n, nLink);
-                }
-            }
-        }
-
-        return g;
     }
 
 

@@ -10,8 +10,9 @@
  */
 
 class Node implements Comparable<Node> {
-    private int number;
+    private String ident;
     private String name;
+    private int timeExec;
     private int earliestTime;
     private int latestTime;
 
@@ -21,14 +22,14 @@ class Node implements Comparable<Node> {
      *
      * Create Node with the number and the name in parameter
      *
-     * @param number
+     * @param ident
      *		Is the id of the node
      *
      * @param name
      *		Is the name of the node
      */
-    public Node(int number, String name){
-        this.number = number;
+    public Node(String ident, String name){
+        this.ident = ident;
         this.name = name;
     }
 
@@ -38,34 +39,34 @@ class Node implements Comparable<Node> {
      * Create Node with the number in parameter
      * The name is an empty string
      *
-     * @param number
+     * @param ident
      *		Is the id of the node
      */
-    public Node(int number){
-        this(number, "");
+    public Node(String ident){
+        this(ident, "");
     }
 
     /**
-     * <b>Function getNumber</b>
+     * <b>Function getIdent</b>
      *
-     * Get the node's number
+     * Get the node's ident
      *
-     * @return the node's number (int)
+     * @return the node's ident (int)
      */
-    public int getNumber(){
-        return number;
+    public String getIdent(){
+        return ident;
     }
 
     /**
-     * <b>Function setNumber</b>
+     * <b>Function setIdent</b>
      *
-     * Update the node's number with the number in parameter
+     * Update the node's ident with the ident in parameter
      *
-     * @param nb
-     *		Is the new number of the node
+     * @param id
+     *		Is the new ident of the node
      */
-    public void setNumber(int nb){
-        this.number = nb;
+    public void setIdent(String id){
+        this.ident = id;
     }
 
     /**
@@ -92,6 +93,12 @@ class Node implements Comparable<Node> {
     }
 
 
+    public void setTimeExec(int time){ this.timeExec = time; }
+
+    public int getTimeExec() {
+        return timeExec;
+    }
+
     /**
      * <b>Function toString</b>
      *
@@ -100,7 +107,7 @@ class Node implements Comparable<Node> {
      * @return the number and the name of the node in a String
      */
     public String toString() {
-        String ret = "[" + number + "]";
+        String ret = "[" + ident + "]";
         if (name != null) {
             ret += " " + name;
         }
@@ -120,11 +127,8 @@ class Node implements Comparable<Node> {
      */
     @Override
     public int compareTo(Node node) {
-        if (node.getNumber() < this.getNumber()) {
-            return -1;
-        }
 
-        if (node.getNumber() == this.getNumber()) {
+        if (node.getIdent() == this.getIdent()) {
             return 0;
         }
 
@@ -155,22 +159,11 @@ class Node implements Comparable<Node> {
 
         Node node = (Node) o;
 
-        return node.getNumber() == this.getNumber() &&
+        return node.getIdent() == this.getIdent() &&
                 node.getName().compareTo(this.getName()) == 0;
     }
 
 
-    /**
-     * <b>Function hashCode</b>
-     *
-     * Hash the node
-     *
-     * @return hash code which represent the node
-     */
-    @Override
-    public int hashCode() {
-        return number;
-    }
 
 
     public int getEarliestTime() {

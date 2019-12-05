@@ -34,6 +34,22 @@ class Graf {
 
     protected int totalTime;
 
+    public String getName() {
+        return name;
+    }
+
+    public Node getStartNode() {
+        return startNode;
+    }
+
+    public Node getEndNode() {
+        return endNode;
+    }
+
+    public int getTotalTime() {
+        return totalTime;
+    }
+
     /**
      * <b>Builder empty graf</b>
      * <p>
@@ -667,6 +683,8 @@ class Graf {
     }
 
     public void printNodeTime(){
+        this.setEarliestTimeNode();
+        this.setLatestTimeNode();
         for (Node node : getAllNodes()) {
             System.out.println(" [ " + node.getNumber() + "] " + "E : " + node.getEarliestTime() + " / L :" + node.getLatestTime() + "\n");
         }
@@ -764,6 +782,8 @@ class Graf {
         return Objects.hash(adjList, name);
     }
 
+
+
     public ArrayList<Node> getCriticalPathList(){
         ArrayList<Node> res= new ArrayList<>();
         res.add(startNode);
@@ -779,6 +799,12 @@ class Graf {
         }
         return res;
     }
+
+    public void randomStrategy(int amountOfWorkers){
+
+
+    }
+
 
 
 

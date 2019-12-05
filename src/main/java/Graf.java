@@ -54,7 +54,7 @@ class Graf {
     public Graf(String name) {
         this.name = name;
         this.adjList = new TreeMap<Node, SortedSet<Edge>>();
-        this.startNode = new Node("*");
+        this.startNode = new Node(-99);
         addNode(startNode);
         this.totalTime = 0;
     }
@@ -107,7 +107,7 @@ class Graf {
 
 
     public void addEndNode(){
-        this.endNode = new Node("~");
+        this.endNode = new Node(999);
         addNode(endNode);
     }
 
@@ -119,7 +119,7 @@ class Graf {
      *
      * @param idNode Is the node's ident to add into the graf
      */
-    public void addNode(String idNode) {
+    public void addNode(int idNode) {
         Node n = new Node(idNode);
         addNode(n);
     }
@@ -151,14 +151,14 @@ class Graf {
      *
      * @param idNode Is the node's number to remove from the graf
      */
-    public void removeNode(String idNode) {
+    public void removeNode(int idNode) {
         Node n = new Node(idNode);
         removeNode(n);
     }
 
-    public Node getNode(String idNode){
+    public Node getNode(int idNode){
         for (Node n : adjList.keySet()) {
-            if(n.getIdent() == idNode){
+            if(n.getNumber() == idNode ){
                 return n;
             }
         }
@@ -233,7 +233,7 @@ class Graf {
      * @param idNodeFrom Is the node's number where the edge begin
      * @param idNodeTo   Is the node's number of the node where the edge end
      */
-    public void removeEdge(String idNodeFrom, String idNodeTo) {
+    public void removeEdge(int idNodeFrom, int idNodeTo) {
         Node nFrom = new Node(idNodeFrom);
         Node nTo = new Node(idNodeTo);
 
@@ -277,7 +277,7 @@ class Graf {
      * @param idNode Is the node's number that we want all successors
      * @return list of successors
      */
-    public List<Node> getSuccessors(String idNode) {
+    public List<Node> getSuccessors(int idNode) {
         Node n = new Node(idNode);
         return getSuccessors(n);
     }
@@ -292,9 +292,7 @@ class Graf {
      */
     public List<Edge> getOutEdges(Node n) {
         List<Edge> listE = new ArrayList<>();
-        System.out.println(n);
-        for (Edge e : adjList.get(n)) {
-            System.out.println(e.toString());
+         for (Edge e : adjList.get(n)) {
             listE.add(e);
         }
 
@@ -309,7 +307,7 @@ class Graf {
      * @param idNode Is the node's number from which we find the list of edges
      * @return list of out edges
      */
-    public List<Edge> getOutEdges(String idNode) {
+    public List<Edge> getOutEdges(int idNode) {
         Node n = new Node(idNode);
         return getOutEdges(n);
     }
@@ -343,7 +341,7 @@ class Graf {
      * @param idNode Is the node's number where which we find the list of edges
      * @return list of in edges
      */
-    public List<Edge> getInEdges(String idNode) {
+    public List<Edge> getInEdges(int idNode) {
         Node n = new Node(idNode);
         return getInEdges(n);
     }
@@ -382,7 +380,7 @@ class Graf {
      * @param idNode Is the node's number where which we find the list of edges
      * @return list of edges from and to the node
      */
-    public List<Edge> getIncidentEdges(String idNode) {
+    public List<Edge> getIncidentEdges(int idNode) {
         Node n = new Node(idNode);
         return getIncidentEdges(n);
     }
@@ -628,7 +626,6 @@ class Graf {
             }
             nbIter++;
         }
-        System.out.println(this.totalTime);
     }
 
     public void setLatestTimeNode() {
@@ -658,13 +655,20 @@ class Graf {
 
     }
 
-    public void getCriticalPath(){
+    public List<Node> getCriticalPath(){
+        ArrayList<Node> listCriticalNode = new ArrayList<Node>();
+        for (Node n : getAllNodes()) {
+            if(n.getEarliestTime() == n.getLatestTime()){
+                listCriticalNode.add(n);
+            }
+        }
 
+        return listCriticalNode;
     }
 
     public void printNodeTime(){
         for (Node node : getAllNodes()) {
-            System.out.println(" [ " + node.getIdent() + "] " + "E : " + node.getEarliestTime() + " / L :" + node.getLatestTime() + "\n");
+            System.out.println(" [ " + node.getNumber() + "] " + "E : " + node.getEarliestTime() + " / L :" + node.getLatestTime() + "\n");
         }
     }
 

@@ -1,15 +1,14 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Main {
     public static void main (String[] args) throws IOException {
 
-        ArrayList<String> listConstruGraph = readFile();
+        Map<String, ArrayList<String>> listConstruGraph = readFile();
+
         Graf g = construGraf(listConstruGraph);
 
-        System.out.println(g.toDotString());
+        //System.out.println(g.toDotString());
         g.setEarliestTimeNode();
         g.setLatestTimeNode();
         g.printNodeTime();
@@ -19,16 +18,19 @@ public class Main {
 
     }
 
-    public static ArrayList<String> readFile() throws IOException {
+    public static Map<String, ArrayList<String>> readFile() throws IOException {
+        Map<String, ArrayList<String>> mapInfoGraph = new HashMap<String, ArrayList<String>>();
         ArrayList<String> listInstr = new ArrayList<String>();
-        BufferedReader br = new BufferedReader(new FileReader("./src/main/java/testCours.txt"));
+        BufferedReader br = new BufferedReader(new FileReader("./src/main/java/test.txt"));
         String line;
         while ((line = br.readLine()) != null) {
-            listInstr.add(line);
+            listInstr = supprSpace(readLine(line));
+            mapInfoGraph.put(listInstr.get(0), listInstr);
+
         }
         br.close();
 
-        return listInstr;
+        return mapInfoGraph;
     }
 
     public static ArrayList<String> readLine(String line) {
@@ -44,35 +46,31 @@ public class Main {
         return listWithoutSpace;
     }
 
-    public static Graf construGraf(ArrayList<String> listInstr){
+    public static Graf construGraf(Map<String, ArrayList<String>> listInstr){
 
         Graf g = new Graf();
-        for (String s : listInstr) {
-            ArrayList<String> instr = supprSpace(readLine(s));
-            String identNode = instr.get(0);
-            Node n = new Node(identNode, instr.get(1)); //create the node
-            n.setTimeExec(Integer.parseInt(instr.get(2)));
+        for (String s :listInstr.keySet()) {
+            Node n = new Node(findIdOfNode(listInstr,s), listInstr.get(s).get(1)); //create the node
+
+            n.setTimeExec(Integer.parseInt(listInstr.get(s).get(2)));
+            //System.out.println("node : " + n.toString() + " time : " + n.getTimeExec());
             g.addNode(n);
-            //System.out.println(g.getNode(identNode).toString());
 
         }
 
-        for (String s : listInstr){
-            ArrayList<String> instr = supprSpace(readLine(s));
-            String identNode = instr.get(0);
-            if(instr.get(3).equals("-")){
-                System.out.println(identNode);
-                g.addEdge(g.startNode, g.getNode(identNode), 0);
+        for (String s : listInstr.keySet()){
+
+            if(listInstr.get(s).get(3).equals("-")){
+                //System.out.println(g.getNode(findIdOfNode(listInstr,s)).toString());
+                g.addEdge(g.startNode, g.getNode(findIdOfNode(listInstr,s)), 0);
 
             }else{
-                for (int i = 3; i< instr.size(); i++){
-                    //System.out.println(identNode);
-                    g.addEdge(g.getNode(instr.get(i)), g.getNode(identNode), g.getNode(instr.get(i)).getTimeExec());
+                for (int i = 3; i< listInstr.get(s).size(); i++){
+                    //System.out.println(g.getNode(findIdOfNode(listInstr,listInstr.get(s).get(i))).toString() + " - > " + g.getNode(findIdOfNode(listInstr,s)).toString());
+                    g.addEdge(g.getNode(findIdOfNode(listInstr,listInstr.get(s).get(i))), g.getNode(findIdOfNode(listInstr,s)), g.getNode(findIdOfNode(listInstr,listInstr.get(s).get(i))).getTimeExec());
                 }
             }
         }
-
-        System.out.println(g.toDotString());
 
         g.addEndNode();
         return addEndEdge(g);
@@ -80,14 +78,19 @@ public class Main {
 
     public static Graf addEndEdge(Graf g){
         for (Node n: g.getAllNodes()) {
-            System.out.println(n.toString());
+            //System.out.println(n.toString());
             List<Edge> listE = g.getOutEdges(n);
             if(listE.isEmpty() && n!=g.endNode){
-                System.out.println(n.toString());
+                //System.out.println("end : " + n.toString());
                 g.addEdge(n, g.endNode, n.getTimeExec());
             }
         }
         return g;
+    }
+
+    public static int findIdOfNode(Map<String, ArrayList<String>> map, String nameNode){
+        List<String> indexes = new ArrayList<String>(map.keySet());
+        return indexes.indexOf(nameNode);
     }
 
 

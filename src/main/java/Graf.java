@@ -763,4 +763,23 @@ class Graf {
     public int hashCode() {
         return Objects.hash(adjList, name);
     }
+
+    public ArrayList<Node> getCriticalPathList(){
+        ArrayList<Node> res= new ArrayList<>();
+        res.add(startNode);
+        return getCriticalRecursivity(startNode,res);
+    }
+
+    public ArrayList<Node> getCriticalRecursivity(Node n, ArrayList<Node> res){
+        for(Edge e : this.getOutEdges(n)){
+            if(e.getNodeTo().getEarliestTime() == e.getNodeTo().getLatestTime()){
+                res.add(e.getNodeTo());
+                return getCriticalRecursivity(e.getNodeTo(),res);
+            }
+        }
+        return res;
+    }
+
+
+
 }

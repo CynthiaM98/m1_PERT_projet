@@ -76,10 +76,10 @@ class Graf {
     }
 
     /**
-     * <b>Builder graf</b> 
-     *
+     * <b>Builder graf</b>
+     * <p>
      * Create a graf with the adjacency array given
-     *     List of int which represent the adjacency array of the graf
+     * List of int which represent the adjacency array of the graf
      */
     /*public Graf(int... args){
         this();
@@ -93,8 +93,6 @@ class Graf {
             }
         }
     }*/
-
-
     public Map<Node, SortedSet<Edge>> getAdjList() {
         return adjList;
     }
@@ -122,7 +120,7 @@ class Graf {
     }
 
 
-    public void addEndNode(){
+    public void addEndNode() {
         this.endNode = new Node(999);
         addNode(endNode);
     }
@@ -172,9 +170,9 @@ class Graf {
         removeNode(n);
     }
 
-    public Node getNode(int idNode){
+    public Node getNode(int idNode) {
         for (Node n : adjList.keySet()) {
-            if(n.getNumber() == idNode ){
+            if (n.getNumber() == idNode) {
                 return n;
             }
         }
@@ -308,7 +306,7 @@ class Graf {
      */
     public List<Edge> getOutEdges(Node n) {
         List<Edge> listE = new ArrayList<>();
-         for (Edge e : adjList.get(n)) {
+        for (Edge e : adjList.get(n)) {
             listE.add(e);
         }
 
@@ -431,9 +429,6 @@ class Graf {
 
         return listE;
     }
-
-
-
 
 
     /**
@@ -629,14 +624,14 @@ class Graf {
         boolean modified = true;
 
 
-        while (nbIter < nodeTime.size() + 1 && modified){
+        while (nbIter < nodeTime.size() + 1 && modified) {
             modified = false;
             for (Edge e : getAllEdges()) {
                 if (e.getNodeTo().getEarliestTime() < e.getNodeFrom().getEarliestTime() + getWeightOfEdge(e.getNodeFrom(), e.getNodeTo())) {
                     e.getNodeTo().setEarliestTime(e.getNodeFrom().getEarliestTime() + getWeightOfEdge(e.getNodeFrom(), e.getNodeTo()));
                     modified = true;
                 }
-                if(totalTime < e.getNodeTo().getEarliestTime()){
+                if (totalTime < e.getNodeTo().getEarliestTime()) {
                     totalTime = e.getNodeTo().getEarliestTime();
                 }
             }
@@ -657,7 +652,7 @@ class Graf {
 
         for (Node node : nodeTime) {
             for (Node succ : reverseGraf.getSuccessors(node)) {
-                distance =  reverseGraf.getWeightOfEdge(node, succ);
+                distance = reverseGraf.getWeightOfEdge(node, succ);
                 if (succ.getLatestTime() > node.getLatestTime() - distance) {
                     succ.setLatestTime(node.getLatestTime() - distance);
                 }
@@ -666,15 +661,15 @@ class Graf {
 
         }
 
-        Graf g=reverseGraf.getReverseGraph();
-        this.adjList=g.getAdjList();
+        Graf g = reverseGraf.getReverseGraph();
+        this.adjList = g.getAdjList();
 
     }
 
-    public List<Node> getCriticalPath(){
+    public List<Node> getCriticalPath() {
         ArrayList<Node> listCriticalNode = new ArrayList<Node>();
         for (Node n : getAllNodes()) {
-            if(n.getEarliestTime() == n.getLatestTime()){
+            if (n.getEarliestTime() == n.getLatestTime()) {
                 listCriticalNode.add(n);
             }
         }
@@ -682,7 +677,7 @@ class Graf {
         return listCriticalNode;
     }
 
-    public void printNodeTime(){
+    public void printNodeTime() {
         this.setEarliestTimeNode();
         this.setLatestTimeNode();
         for (Node node : getAllNodes()) {
@@ -783,29 +778,61 @@ class Graf {
     }
 
 
-
-    public ArrayList<Node> getCriticalPathList(){
-        ArrayList<Node> res= new ArrayList<>();
+    public ArrayList<Node> getCriticalPathList() {
+        ArrayList<Node> res = new ArrayList<>();
         res.add(startNode);
-        return getCriticalRecursivity(startNode,res);
+        return getCriticalRecursivity(startNode, res);
     }
 
-    public ArrayList<Node> getCriticalRecursivity(Node n, ArrayList<Node> res){
-        for(Edge e : this.getOutEdges(n)){
-            if(e.getNodeTo().getEarliestTime() == e.getNodeTo().getLatestTime()){
+    public ArrayList<Node> getCriticalRecursivity(Node n, ArrayList<Node> res) {
+        for (Edge e : this.getOutEdges(n)) {
+            if (e.getNodeTo().getEarliestTime() == e.getNodeTo().getLatestTime()) {
                 res.add(e.getNodeTo());
-                return getCriticalRecursivity(e.getNodeTo(),res);
+                return getCriticalRecursivity(e.getNodeTo(), res);
             }
         }
         return res;
     }
 
-    public void randomStrategy(int amountOfWorkers){
+    public Map<Worker, List<Node>> randomStrategy(int amountOfWorkers) {
 
 
+        Map<Worker, List<Node>> assignmentList= new HashMap<>();
+        int amountOfTasks = this.getAllNodes().size() - 2;
+        if (amountOfWorkers == amountOfTasks) { //Case 1: same amount of workers than tasks
+            List<Node> restTaskList=this.getAllNodes();
+            restTaskList.remove(startNode);
+            restTaskList.remove(endNode);
+            for(int i=0;i<amountOfWorkers;i++){
+                int taskId=(int)Math.floor(Math.random() * 6) + 1;
+                assignmentList.put(new Worker(i),Arrays.asList(restTaskList.get(taskId)));
+                restTaskList.remove(taskId);
+            }
+
+        } else {
+            if (amountOfWorkers > amountOfTasks) { //Case 2: more workers than tasks
+                List<Node> restTaskList=this.getAllNodes();
+                restTaskList.remove(startNode);
+                restTaskList.remove(endNode);
+                for(int i=0;i<amountOfWorkers;i++){
+                    if(restTaskList.size()!=0) {
+                        int taskId = (int) Math.floor(Math.random() * 6) + 1;
+                        assignmentList.put(new Worker(i), Arrays.asList(restTaskList.get(taskId)));
+                        restTaskList.remove(taskId);
+                    }
+                    else{
+                        assignmentList.put(new Worker(i), null);
+                    }
+                }
+
+            } else { //Case 3: more tasks than workers //TODO
+
+
+            }
+
+        }
+        return assignmentList;
     }
-
-
 
 
 }

@@ -4,25 +4,24 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        Map<String, ArrayList<String>> listConstruGraph = readFile();
+        /*Map<String, ArrayList<String>> listConstruGraph = readFile("./src/main/java/testCours.txt");
         Graf g = construGraf(listConstruGraph);
-        //System.out.println(g.toDotString());
+        System.out.println(g.toDotString());
         g.printNodeTime();
-
         ArrayList<Node> critList = g.getCriticalPathList();
         for (Node node : critList) {
             System.out.println(node.toString());
         }
-
-        //  SwitchOperatedTextMenu();
+*/
+        SwitchOperatedTextMenu();
 
 
     }
 
-    public static Map<String, ArrayList<String>> readFile() throws IOException {
+    public static Map<String, ArrayList<String>> readFile(String path) throws IOException {
         Map<String, ArrayList<String>> mapInfoGraph = new HashMap<String, ArrayList<String>>();
         ArrayList<String> listInstr = new ArrayList<String>();
-        BufferedReader br = new BufferedReader(new FileReader("./src/main/java/testCours.txt"));
+        BufferedReader br = new BufferedReader(new FileReader(path));
         String line;
         while ((line = br.readLine()) != null) {
             listInstr = supprSpace(readLine(line));
@@ -100,7 +99,7 @@ public class Main {
         Scanner menuChoiceScan = new Scanner(System.in);
         // print menu
         System.out.println("-----------------MENU----------------");
-        System.out.println("1. Read a construction description file");
+        System.out.println("1. Read a construction description file / Reset the current graf");
         System.out.println("2. Draw the corresponding PERT chart");
         System.out.println("3. Save the graph as a file");
         System.out.println("4. Compute and display the total duration of the construction");
@@ -125,16 +124,16 @@ public class Main {
             menuItem = menuChoiceScan.nextInt();
             switch (menuItem) {
                 case 1:
-                    System.out.println("You've chosen option #1 : Read a construction description file\n");
+                    myGraph = new Graf();
+                    System.out.println("You've chosen option #1 : Read a construction description file / Reset the current graf\n");
                     System.out.println("Please enter the desired location of the description file \n");
                     try {
-                        Map<String, ArrayList<String>> listConstruGraph = readFile();
+                        String sourceFilePath = menuScan.nextLine();
+                        Map<String, ArrayList<String>> listConstruGraph = readFile(sourceFilePath);
                         myGraph = construGraf(listConstruGraph);
-                    }
-                    catch (IOException e){
+                    } catch (IOException e) {
                         System.out.println(e.getMessage());
                     }
-                    myGraph = new Graf();
                     init = true;
                     System.out.println("Done \n ----------------------------------\n");
                     break;
@@ -142,6 +141,7 @@ public class Main {
                 case 2:
                     if (init) {
                         System.out.println("You've chosen option #2 : Draw the corresponding PERT chart\n");
+                        System.out.println(myGraph.toDotString());
                         System.out.println("Done \n ----------------------------------\n");
                     } else {
                         System.out.println("Error: Please ask for the creation of an empty graph first (option #1 in the menu)");
@@ -162,7 +162,7 @@ public class Main {
                         System.out.println("You've chosen option #4 : Compute and display the total duration of the construction\n");
                         myGraph.setEarliestTimeNode();
                         myGraph.setLatestTimeNode();
-                        System.out.println("The total duration of the construction has a value of "+ myGraph.getEndNode().getLatestTime());
+                        System.out.println("The total duration of the construction has a value of " + myGraph.getEndNode().getLatestTime());
                         System.out.println("Done \n ----------------------------------\n");
                     } else {
                         System.out.println("Error: Please ask for the creation of an empty graph first (option #1 in the menu)");
@@ -197,7 +197,10 @@ public class Main {
                         System.out.println("You've chosen option #7 : Compute the assignment strategy n°1 : Random assignment\n");
                         System.out.print("Please enter the first number of workers you want to assign\n");
                         int amountOfWorkers = menuScan.nextInt();
-                        myGraph.randomStrategy(amountOfWorkers);
+                        List<Worker> randomAssignList = myGraph.randomStrategy(amountOfWorkers);
+                        for (Worker worker : randomAssignList) {
+                            System.out.println(worker.toString());
+                        }
                         System.out.println("Done \n ----------------------------------\n");
                     } else {
                         System.out.println("Error: Please ask for the creation of an empty graph first (option #1 in the menu)");

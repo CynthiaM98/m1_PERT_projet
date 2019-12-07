@@ -1,21 +1,32 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Worker {
 
     protected String name;
     protected int id;
+    protected List<Node> tasksList;
 
     public Worker(String name, int id, List<Node> tasksList) {
         this.name = name;
         this.id = id;
+        this.tasksList=tasksList;
 
     }
 
     public Worker(int id) {
-        this.name = "Worker "+id;
+        this.name = "Worker_"+id;
         this.id = id;
+        this.tasksList=new ArrayList<>();
     }
 
+    public List<Node> getTasksList() {
+        return tasksList;
+    }
+
+    public void setTasksList(List<Node> tasksList) {
+        this.tasksList = tasksList;
+    }
 
     public String getName() {
         return name;
@@ -39,6 +50,7 @@ public class Worker {
         return "Worker{" +
                 "name='" + name + '\'' +
                 ", id=" + id +
+                ", tasksList=" + tasksList +
                 '}';
     }
 }

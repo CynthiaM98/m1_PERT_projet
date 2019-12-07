@@ -151,6 +151,9 @@ public class Main {
                 case 3:
                     if (init) {
                         System.out.println("You've chosen option #3 : Save the graph as a file\n");
+                        System.out.println("Please enter the desired location of the DOT file \n");
+                        String dotFileLocation = menuChoiceScan.nextLine();
+                        myGraph.toDotFile(dotFileLocation);
                         System.out.println("Done \n ----------------------------------\n");
                     } else {
                         System.out.println("Error: Please ask for the creation of an empty graph first (option #1 in the menu)");
@@ -183,9 +186,14 @@ public class Main {
                     if (init) {
                         System.out.println("You've chosen option #6 : Compute and display a critical path\n");
                         ArrayList<Node> critList = myGraph.getCriticalPathList();
-                        for (Node node : critList) {
-                            System.out.println(node.toString());
-                        } //TODO Change display skin ?
+                        if(critList.size()<=1){
+                            System.out.println("There is no critical path in the current graf");
+                        }
+                        else {
+                            for (Node node : critList) {
+                                System.out.println(node.toString());
+                            } //TODO Change display skin ?
+                        }
                         System.out.println("Done \n ----------------------------------\n");
                     } else {
                         System.out.println("Error: Please ask for the creation of an empty graph first (option #1 in the menu)");
@@ -216,6 +224,7 @@ public class Main {
                         for (Worker worker : semiRandomAssignList) {
                             System.out.println(worker.toString());
                         }
+
                         System.out.println("Done \n ----------------------------------\n");
                     } else {
                         System.out.println("Error: Please ask for the creation of an empty graph first (option #1 in the menu)");

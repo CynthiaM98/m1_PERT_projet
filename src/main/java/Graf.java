@@ -1,12 +1,7 @@
 import javafx.collections.transformation.SortedList;
 
+import java.io.*;
 import java.util.*;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.lang.Math;
@@ -794,6 +789,14 @@ class Graf {
         return res;
     }
 
+    public void constructionDurationCalculator(List<Worker> assigmentList){ //calculate the duration of the construction with a chosen assigment method
+
+    }
+
+
+
+
+
 
     public List<Worker> randomStrategy(int amountOfWorkers) {
         List<Worker> assignmentList = new ArrayList<>();
@@ -808,6 +811,9 @@ class Graf {
         for(int j=0;j<amountOfTasks;j++){
             int workerId = (int) Math.floor(Math.random() * (amountOfWorkers));
             assignmentList.get(workerId).tasksList.add(restTaskList.get(j));
+        }
+        for (int k = 0; k < amountOfWorkers; k++) {
+         Collections.sort(assignmentList.get(k).tasksList,Collections.reverseOrder());
         }
         return assignmentList;
     }
@@ -867,5 +873,8 @@ class Graf {
 
         return assignmentList;
     }
+
+
+
 
 }

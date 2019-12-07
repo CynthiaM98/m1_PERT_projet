@@ -106,7 +106,7 @@ public class Main {
         System.out.println("5. Compute and display the earliest and latest start times of each task");
         System.out.println("6. Compute and display a critical path");
         System.out.println("7. Compute the assignment strategy n°1 : Random assignment");
-        System.out.println("8. Compute the assignment strategy n°2 :"); //TODO add the name of the strategy
+        System.out.println("8. Compute the assignment strategy n°2 : Semi-Random assignment\"");
         System.out.println("9. Compute the assignment strategy n°3 :"); //TODO add the name of the strategy
         System.out.println("10. Compute the assignment strategy n°4 :");//TODO add the name of the strategy
         System.out.println("11. Display one more time this menu");
@@ -209,9 +209,13 @@ public class Main {
 
                 case 8:
                     if (init) {
-                        System.out.println("You've chosen option #8 : Compute the assignment strategy n°2 :\n");
+                        System.out.println("You've chosen option #8 : Compute the assignment strategy n°2 : Semi-Random assignment\"\n");
                         System.out.print("Please enter the first number of workers you want to assign\n");
                         int amountOfWorkers = menuScan.nextInt();
+                        List<Worker> semiRandomAssignList = myGraph.optimizedRandomStrategy(amountOfWorkers);
+                        for (Worker worker : semiRandomAssignList) {
+                            System.out.println(worker.toString());
+                        }
                         System.out.println("Done \n ----------------------------------\n");
                     } else {
                         System.out.println("Error: Please ask for the creation of an empty graph first (option #1 in the menu)");
@@ -243,18 +247,18 @@ public class Main {
 
                 case 11:
                     System.out.println("-----------------MENU----------------");
-                    System.out.println("1. Read a construction description file\n");
-                    System.out.println("2. Draw the corresponding PERT chart\n");
-                    System.out.println("3. Save the graph as a file\n");
-                    System.out.println("4. Compute and display the total duration of the construction\n");
-                    System.out.println("5. Compute and display the earliest and latest start times of each task\n");
-                    System.out.println("6. Compute and display the critical path(s) \n");
-                    System.out.println("7. Enter the number of workers\n");
-                    System.out.println("8. Choose an assignment strategy\n");
-                    System.out.println("9. Compute and display the construction’s duration according the chosen strategy\n");
-                    System.out.println("10. Get the list of all edges entering a node\n");
-                    System.out.println("11. Display one more time this menu\n");
-                    System.out.println("0. Quit this application\n");
+                    System.out.println("1. Read a construction description file / Reset the current graf");
+                    System.out.println("2. Draw the corresponding PERT chart");
+                    System.out.println("3. Save the graph as a file");
+                    System.out.println("4. Compute and display the total duration of the construction");
+                    System.out.println("5. Compute and display the earliest and latest start times of each task");
+                    System.out.println("6. Compute and display a critical path");
+                    System.out.println("7. Compute the assignment strategy n°1 : Random assignment");
+                    System.out.println("8. Compute the assignment strategy n°2 : Semi-Random assignment\"");
+                    System.out.println("9. Compute the assignment strategy n°3 :"); //TODO add the name of the strategy
+                    System.out.println("10. Compute the assignment strategy n°4 :");//TODO add the name of the strategy
+                    System.out.println("11. Display one more time this menu");
+                    System.out.println("0. Quit this application");
                     System.out.println("----------------------------------");
                     break;
 

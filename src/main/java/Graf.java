@@ -661,16 +661,6 @@ class Graf {
 
     }
 
-    public List<Node> getCriticalPath() {
-        ArrayList<Node> listCriticalNode = new ArrayList<Node>();
-        for (Node n : getAllNodes()) {
-            if (n.getEarliestTime() == n.getLatestTime()) {
-                listCriticalNode.add(n);
-            }
-        }
-
-        return listCriticalNode;
-    }
 
     public void printNodeTime() {
         this.setEarliestTimeNode();
@@ -789,131 +779,7 @@ class Graf {
         return res;
     }
 
-    public void constructionDurationCalculator(List<Worker> assigmentList) { //calculate the duration of the construction with a chosen assigment method
 
-    }
-
-
-    private boolean allTaskFinished(Map<Node, Integer> timeTaskMap) {
-
-        int cptFinished = 0;
-        for (Map.Entry<Node, Integer> e : timeTaskMap.entrySet()) {
-            if (e.getValue() == 0) {
-                ++cptFinished;
-            }
-        }
-        return cptFinished == timeTaskMap.size();
-    }
-
-
-    public int stategyTest(int amountOfWorkers) {
-        Map<Node, Integer> timeTaskMap = new HashMap<>();
-        int duration = 0;
-        List<Node> taskList = this.getAllNodes();
-        List<Worker> assignmentList = new ArrayList<>();
-        taskList.remove(startNode);
-        taskList.remove(endNode);
-        for (Node task : taskList) {
-            timeTaskMap.put(task, task.getTimeExec());
-        } //init of the list of tasks
-
-        for (int i = 0; i < amountOfWorkers; i++) {
-            Worker currentWorker = new Worker(i + 1);
-            assignmentList.add(currentWorker);
-        } //init of the list of workers
-
-        List<Node> restToDoTasks = new ArrayList<>();
-        for (Map.Entry<Node, Integer> e : timeTaskMap.entrySet()) {
-            restToDoTasks.add(e.getKey());
-        }
-
-        while (!allTaskFinished(timeTaskMap)) {
-
-            for (Map.Entry<Node, Integer> e : timeTaskMap.entrySet()) {
-                e.setValue(e.getValue() - 1);
-            }//while all the tasks are not finished yet
-
-
-        }
-        return duration;
-    }
-
-
-        public List<Worker> randomStrategy ( int amountOfWorkers){
-            List<Worker> assignmentList = new ArrayList<>();
-            int amountOfTasks = this.getAllNodes().size() - 2;
-            List<Node> restTaskList = this.getAllNodes();
-            restTaskList.remove(startNode);
-            restTaskList.remove(endNode);
-            for (int i = 0; i < amountOfWorkers; i++) {
-                Worker currentWorker = new Worker(i + 1);
-                assignmentList.add(currentWorker);
-            }
-            for (int j = 0; j < amountOfTasks; j++) {
-                int workerId = (int) Math.floor(Math.random() * (amountOfWorkers));
-                assignmentList.get(workerId).tasksList.add(restTaskList.get(j));
-            }
-            for (int k = 0; k < amountOfWorkers; k++) {
-                Collections.sort(assignmentList.get(k).tasksList, Collections.reverseOrder());
-            }
-            return assignmentList;
-        }
-
-
-        public List<Worker> optimizedRandomStrategy ( int amountOfWorkers){
-            List<Worker> assignmentList = new ArrayList<>();
-            int amountOfTasks = this.getAllNodes().size() - 2;
-            if (amountOfWorkers == amountOfTasks) { //Case 1: same amount of workers than tasks
-                List<Node> restTaskList = this.getAllNodes();
-                restTaskList.remove(startNode);
-                restTaskList.remove(endNode);
-                for (int i = 0; i < amountOfWorkers; i++) {
-                    int taskId = (int) Math.floor(Math.random() * (restTaskList.size()));
-                    Worker currentWorker = new Worker(i + 1);
-                    currentWorker.tasksList.add(restTaskList.get(taskId));
-                    assignmentList.add(currentWorker);
-                    restTaskList.remove(taskId);
-                }
-                return assignmentList;
-            }
-            if (amountOfWorkers > amountOfTasks) { //Case 2: more workers than tasks
-                List<Node> restTaskList = this.getAllNodes();
-                restTaskList.remove(startNode);
-                restTaskList.remove(endNode);
-                int initialSize = restTaskList.size();
-                for (int i = 0; i < amountOfWorkers; i++) {
-                    Worker currentWorker = new Worker(i + 1);
-                    assignmentList.add(currentWorker);
-                }
-
-                for (int j = 0; j < initialSize; j++) {
-                    int taskId = (int) Math.floor(Math.random() * (restTaskList.size()));
-                    assignmentList.get(j).tasksList.add(restTaskList.get(taskId));
-                    restTaskList.remove(taskId);
-                }
-                return assignmentList;
-            }
-
-            List<Node> restTaskList = this.getAllNodes(); //Case 3: more tasks than workers
-            restTaskList.remove(startNode);
-            restTaskList.remove(endNode);
-            int initialSize = restTaskList.size();
-            for (int j = 0; j < amountOfWorkers; j++) {
-                Worker currentWorker = new Worker(j + 1);
-                int taskId = (int) Math.floor(Math.random() * (restTaskList.size()));
-                currentWorker.tasksList.add(restTaskList.get(taskId));
-                assignmentList.add(currentWorker);
-                restTaskList.remove(taskId);
-            }
-            initialSize = restTaskList.size();
-            for (int i = 0; i < initialSize; i++) {
-                int workerId = (int) Math.floor(Math.random() * (amountOfWorkers - 1));
-                assignmentList.get(workerId).tasksList.add(restTaskList.get(initialSize - i - 1));
-                restTaskList.remove(initialSize - i - 1);
-            }
-
-            return assignmentList;
-        }
 
 
     }

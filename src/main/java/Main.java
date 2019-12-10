@@ -2,6 +2,14 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+
+    private static int strat = 0;
+    private static int amountOfWorkers = 0;
+    private static int totalTime = 0;
+    private static Graf g = new Graf();
+    private static Map<Node, Integer> currentAndFinishTask = new HashMap<>();
+    private static Set<Node> availableTask = new HashSet<>();
+
     public static void main(String[] args) throws IOException {
 
         /*Map<String, ArrayList<String>> listConstruGraph = readFile("./src/main/java/testCours.txt");
@@ -48,12 +56,10 @@ public class Main {
 
     public static Graf construGraf(Map<String, ArrayList<String>> listInstr) {
 
-        Graf g = new Graf();
         for (String s : listInstr.keySet()) {
             Node n = new Node(findIdOfNode(listInstr, s), listInstr.get(s).get(1)); //create the node
 
             n.setTimeExec(Integer.parseInt(listInstr.get(s).get(2)));
-            //System.out.println("node : " + n.toString() + " time : " + n.getTimeExec());
             g.addNode(n);
 
         }
@@ -61,12 +67,10 @@ public class Main {
         for (String s : listInstr.keySet()) {
 
             if (listInstr.get(s).get(3).equals("-")) {
-                //System.out.println(g.getNode(findIdOfNode(listInstr,s)).toString());
                 g.addEdge(g.startNode, g.getNode(findIdOfNode(listInstr, s)), 0);
 
             } else {
                 for (int i = 3; i < listInstr.get(s).size(); i++) {
-                    //System.out.println(g.getNode(findIdOfNode(listInstr,listInstr.get(s).get(i))).toString() + " - > " + g.getNode(findIdOfNode(listInstr,s)).toString());
                     g.addEdge(g.getNode(findIdOfNode(listInstr, listInstr.get(s).get(i))), g.getNode(findIdOfNode(listInstr, s)), g.getNode(findIdOfNode(listInstr, listInstr.get(s).get(i))).getTimeExec());
                 }
             }
@@ -78,10 +82,8 @@ public class Main {
 
     public static Graf addEndEdge(Graf g) {
         for (Node n : g.getAllNodes()) {
-            //System.out.println(n.toString());
             List<Edge> listE = g.getOutEdges(n);
             if (listE.isEmpty() && n != g.endNode) {
-                //System.out.println("end : " + n.toString());
                 g.addEdge(n, g.endNode, n.getTimeExec());
             }
         }
@@ -105,10 +107,10 @@ public class Main {
         System.out.println("4. Compute and display the total duration of the construction");
         System.out.println("5. Compute and display the earliest and latest start times of each task");
         System.out.println("6. Compute and display a critical path");
-        System.out.println("7. Compute the assignment strategy n°1 : Random assignment");
-        System.out.println("8. Compute the assignment strategy n°2 : Semi-Random assignment\"");
-        System.out.println("9. Compute the assignment strategy n°3 :"); //TODO add the name of the strategy
-        System.out.println("10. Compute the assignment strategy n°4 :");//TODO add the name of the strategy
+        System.out.println("7. Compute the assignment strategy n°1 : Critical path");
+        System.out.println("8. Compute the assignment strategy n°2 : ");
+        System.out.println("9. Compute the assignment strategy n°3 :");
+        System.out.println("10. Compute the assignment strategy n°4 : Random assignment");
         System.out.println("11. Display one more time this menu");
         System.out.println("0. Quit this application");
         System.out.println("----------------------------------");
@@ -202,13 +204,12 @@ public class Main {
 
                 case 7:
                     if (init) {
-                        System.out.println("You've chosen option #7 : Compute the assignment strategy n°1 : Random assignment\n");
+                        strat = 1;
+                        System.out.println("You've chosen option #7 : Compute the assignment strategy n°1 : Critical path\n");
                         System.out.print("Please enter the first number of workers you want to assign\n");
-                        int amountOfWorkers = menuScan.nextInt();
-                        List<Worker> randomAssignList = myGraph.randomStrategy(amountOfWorkers);
-                        for (Worker worker : randomAssignList) {
-                            System.out.println(worker.toString());
-                        }
+                        amountOfWorkers = menuScan.nextInt();
+                        execStrategie();
+                        System.out.println("Total time of the execution : " + totalTime);
                         System.out.println("Done \n ----------------------------------\n");
                     } else {
                         System.out.println("Error: Please ask for the creation of an empty graph first (option #1 in the menu)");
@@ -217,14 +218,12 @@ public class Main {
 
                 case 8:
                     if (init) {
-                        System.out.println("You've chosen option #8 : Compute the assignment strategy n°2 : Semi-Random assignment\"\n");
+                        strat = 2;
+                        System.out.println("You've chosen option #8 : Compute the assignment strategy n°2 : \"\n");
                         System.out.print("Please enter the first number of workers you want to assign\n");
-                        int amountOfWorkers = menuScan.nextInt();
-                        List<Worker> semiRandomAssignList = myGraph.optimizedRandomStrategy(amountOfWorkers);
-                        for (Worker worker : semiRandomAssignList) {
-                            System.out.println(worker.toString());
-                        }
-
+                        amountOfWorkers = menuScan.nextInt();
+                        execStrategie();
+                        System.out.println("Total time of the execution : " + totalTime);
                         System.out.println("Done \n ----------------------------------\n");
                     } else {
                         System.out.println("Error: Please ask for the creation of an empty graph first (option #1 in the menu)");
@@ -234,9 +233,12 @@ public class Main {
 
                 case 9:
                     if (init) {
+                        strat = 3;
                         System.out.println("You've chosen option #9 : Compute the assignment strategy n°3 :\n");
                         System.out.print("Please enter the first number of workers you want to assign\n");
-                        int amountOfWorkers = menuScan.nextInt();
+                        amountOfWorkers = menuScan.nextInt();
+                        execStrategie();
+                        System.out.println("Total time of the execution : " + totalTime);
                         System.out.println("Done \n ----------------------------------\n");
                     } else {
                         System.out.println("Error: Please ask for the creation of an empty graph first (option #1 in the menu)");
@@ -245,9 +247,12 @@ public class Main {
 
                 case 10:
                     if (init) {
-                        System.out.println("You've chosen option #10 : GCompute the assignment strategy n°4 :\n");
+                        strat = 4;
+                        System.out.println("You've chosen option #10 : GCompute the assignment strategy n°4 : Random assignment\n");
                         System.out.print("Please enter the first number of workers you want to assign\n");
-                        int amountOfWorkers = menuScan.nextInt();
+                        amountOfWorkers = menuScan.nextInt();
+                        execStrategie();
+                        System.out.println("Total time of the execution : " + totalTime);
                         System.out.println("Done \n ----------------------------------\n");
                     } else {
                         System.out.println("Error: Please ask for the creation of an empty graph first (option #1 in the menu)");
@@ -262,10 +267,10 @@ public class Main {
                     System.out.println("4. Compute and display the total duration of the construction");
                     System.out.println("5. Compute and display the earliest and latest start times of each task");
                     System.out.println("6. Compute and display a critical path");
-                    System.out.println("7. Compute the assignment strategy n°1 : Random assignment");
-                    System.out.println("8. Compute the assignment strategy n°2 : Semi-Random assignment\"");
-                    System.out.println("9. Compute the assignment strategy n°3 :"); //TODO add the name of the strategy
-                    System.out.println("10. Compute the assignment strategy n°4 :");//TODO add the name of the strategy
+                    System.out.println("7. Compute the assignment strategy n°1 : Critical path");
+                    System.out.println("8. Compute the assignment strategy n°2 : ici");
+                    System.out.println("9. Compute the assignment strategy n°3 : ");
+                    System.out.println("10. Compute the assignment strategy n°4 : Random assignment");
                     System.out.println("11. Display one more time this menu");
                     System.out.println("0. Quit this application");
                     System.out.println("----------------------------------");
@@ -281,4 +286,137 @@ public class Main {
         while (!quit);
         System.out.println("Bye-bye!");
     }
+
+    public static void execStrategie() {
+        currentAndFinishTask.clear();
+
+        for (Edge e : g.getOutEdges(g.getStartNode())) {
+            availableTask.add(e.getNodeTo());
+        }
+        currentAndFinishTask.put(g.getEndNode(), 0);
+        currentAndFinishTask.put(g.getStartNode(), 0);
+
+        int workersWaiting = amountOfWorkers;
+
+        while (!allTaskDone()) {
+
+            for (Node n : currentAndFinishTask.keySet()) {
+                if (currentAndFinishTask.get(n) == 0) {
+                    continue;
+                }
+
+                currentAndFinishTask.put(n, currentAndFinishTask.get(n) - 1);
+
+                if (currentAndFinishTask.get(n) == 0) {
+                    workersWaiting++;
+                    availableTask.addAll(addSuccessor(n));
+                }
+            }
+
+            while(workersWaiting > 0 && !availableTask.isEmpty()){
+                affectWorker();
+                workersWaiting--;
+            }
+            if(workersWaiting < amountOfWorkers){
+                totalTime++;
+            }
+
+        }
+
+    }
+
+    public static boolean allTaskDone() {
+        for (Node n : currentAndFinishTask.keySet()) {
+            if (currentAndFinishTask.get(n) != 0) {
+                return false;
+            }
+        }
+
+        return true && availableTask.isEmpty();
+    }
+
+    public static void affectWorker(){
+        Node removeNode = null;
+        switch (strat) {
+            case 1 : //critical path
+                ArrayList<Node> critiPath = g.getCriticalPathList();
+
+                for(Node n : availableTask){
+                    if (critiPath.contains(n)) {
+                        removeNode = n;
+                        break;
+                    }
+                }
+
+                if (removeNode != null) {
+                    break;
+                }
+            case 2 : //choose node with minimal time exec first
+                removeNode = availableTask.iterator().next();
+
+                for (Node n : availableTask) {
+                    if (n.getTimeExec() < removeNode.getTimeExec()) {
+                        removeNode = n;
+                    }
+                }
+                break;
+
+            case 3 :  //choose node with maximal time exec first
+                removeNode = availableTask.iterator().next();
+
+                for (Node n : availableTask) {
+                    if (n.getTimeExec() > removeNode.getTimeExec()) {
+                        removeNode = n;
+                    }
+                }
+                break;
+            case 4 : //Random
+
+                int rand = (int) Math.random() * availableTask.size();
+                int cmp = 0;
+                for (Node n : availableTask) {
+                    if (cmp == rand) {
+                        removeNode = n;
+                    }
+                    cmp++;
+                }
+                break;
+
+
+        }
+
+        System.out.println(removeNode.getName());
+
+        currentAndFinishTask.put(removeNode, removeNode.getTimeExec());
+        availableTask.remove(removeNode);
+
+    }
+
+
+    public static Set<Node> addSuccessor(Node n) {
+        Set<Node> childrensToAdd = new HashSet<>();
+
+        for (Edge oe : g.getOutEdges(n)) {
+            if (currentAndFinishTask.containsKey(oe.getNodeTo())) {
+                continue;
+            }
+
+            boolean ready = true;
+
+            for (Edge ie : g.getInEdges(oe.getNodeTo())) {
+                if (!currentAndFinishTask.containsKey(ie.getNodeFrom()) || currentAndFinishTask.get(ie.getNodeFrom()) != 0) {
+                    ready = false;
+                    break;
+                }
+            }
+
+            if (ready) {
+                childrensToAdd.add(oe.getNodeTo());
+            }
+
+        }
+
+        return childrensToAdd;
+    }
+
 }

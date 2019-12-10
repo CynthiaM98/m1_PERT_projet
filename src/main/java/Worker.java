@@ -5,27 +5,31 @@ public class Worker {
 
     protected String name;
     protected int id;
-    protected List<Node> tasksList;
+    protected Node currentTask;
+    protected boolean inWork;
 
-    public Worker(String name, int id, List<Node> tasksList) {
-        this.name = name;
-        this.id = id;
-        this.tasksList=tasksList;
-
-    }
+   
 
     public Worker(int id) {
         this.name = "Worker_"+id;
         this.id = id;
-        this.tasksList=new ArrayList<>();
+        this.inWork = false;  
     }
 
-    public List<Node> getTasksList() {
-        return tasksList;
+    public boolean isInWork() {
+        return inWork;
     }
 
-    public void setTasksList(List<Node> tasksList) {
-        this.tasksList = tasksList;
+    public void setInWork(boolean inWork) {
+        this.inWork = inWork;
+    }
+
+    public void setCurrentTask(Node n){
+        this.currentTask = n;
+    }
+
+    public Node getCurrentTask(){
+        return currentTask;
     }
 
     public String getName() {
@@ -50,7 +54,6 @@ public class Worker {
         return "Worker{" +
                 "name='" + name + '\'' +
                 ", id=" + id +
-                ", tasksList=" + tasksList +
                 '}';
     }
 }

@@ -5,6 +5,8 @@ public class Main {
 
     private static int strat = 0;
     private static int amountOfWorkers = 0;
+    private static ArrayList<Worker> listOfWorker = new ArrayList<Worker>();
+    private static Map<Node, Worker> assigmentTaskWorker = new HashMap<>();
     private static int totalTime = 0;
     private static Graf g = new Graf();
     private static Map<Node, Integer> currentAndFinishTask = new HashMap<>();
@@ -208,6 +210,7 @@ public class Main {
                         System.out.println("You've chosen option #7 : Compute the assignment strategy n°1 : Critical path\n");
                         System.out.print("Please enter the first number of workers you want to assign\n");
                         amountOfWorkers = menuScan.nextInt();
+                        createListWorker(amountOfWorkers);
                         execStrategie();
                         System.out.println("Total time of the execution : " + totalTime);
                         System.out.println("Done \n ----------------------------------\n");
@@ -222,6 +225,7 @@ public class Main {
                         System.out.println("You've chosen option #8 : Compute the assignment strategy n°2 : \"\n");
                         System.out.print("Please enter the first number of workers you want to assign\n");
                         amountOfWorkers = menuScan.nextInt();
+                        createListWorker(amountOfWorkers);
                         execStrategie();
                         System.out.println("Total time of the execution : " + totalTime);
                         System.out.println("Done \n ----------------------------------\n");
@@ -237,6 +241,7 @@ public class Main {
                         System.out.println("You've chosen option #9 : Compute the assignment strategy n°3 :\n");
                         System.out.print("Please enter the first number of workers you want to assign\n");
                         amountOfWorkers = menuScan.nextInt();
+                        createListWorker(amountOfWorkers);
                         execStrategie();
                         System.out.println("Total time of the execution : " + totalTime);
                         System.out.println("Done \n ----------------------------------\n");
@@ -251,6 +256,7 @@ public class Main {
                         System.out.println("You've chosen option #10 : GCompute the assignment strategy n°4 : Random assignment\n");
                         System.out.print("Please enter the first number of workers you want to assign\n");
                         amountOfWorkers = menuScan.nextInt();
+                        createListWorker(amountOfWorkers);
                         execStrategie();
                         System.out.println("Total time of the execution : " + totalTime);
                         System.out.println("Done \n ----------------------------------\n");
@@ -287,8 +293,17 @@ public class Main {
         System.out.println("Bye-bye!");
     }
 
+
+    public static void createListWorker(int amountOfWorkers){
+        for (int i = 0; i < amountOfWorkers; i++){
+            listOfWorker.add(new Worker(i+1));
+        }
+    }
+
     public static void execStrategie() {
         currentAndFinishTask.clear();
+        totalTime = 0;
+
 
         for (Edge e : g.getOutEdges(g.getStartNode())) {
             availableTask.add(e.getNodeTo());
@@ -309,12 +324,14 @@ public class Main {
 
                 if (currentAndFinishTask.get(n) == 0) {
                     workersWaiting++;
+                    taskWorkerFinish(assigmentTaskWorker.get(n));
+                    assigmentTaskWorker.remove(n);
                     availableTask.addAll(addSuccessor(n));
                 }
             }
 
-            while(workersWaiting > 0 && !availableTask.isEmpty()){
-                affectWorker();
+            while(workersWaiting > 0 && !availableTask.isEmpty() && workerAvailable()){
+                affectWorker(getFreeWorker());
                 workersWaiting--;
             }
             if(workersWaiting < amountOfWorkers){
@@ -323,6 +340,28 @@ public class Main {
 
         }
 
+    }
+
+    public static boolean workerAvailable(){
+        for (Worker w : listOfWorker){
+            if (!w.isInWork()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void taskWorkerFinish(Worker w){
+        w.setInWork(false);
+    }
+
+    public static Worker getFreeWorker(){
+        for (Worker w : listOfWorker) {
+            if(!w.inWork){
+                return w;
+            }
+        }
+        return null;
     }
 
     public static boolean allTaskDone() {
@@ -335,8 +374,9 @@ public class Main {
         return true && availableTask.isEmpty();
     }
 
-    public static void affectWorker(){
+    public static void affectWorker(Worker w){
         Node removeNode = null;
+        w.setInWork(true);
         switch (strat) {
             case 1 : //critical path
                 ArrayList<Node> critiPath = g.getCriticalPathList();
@@ -385,7 +425,8 @@ public class Main {
 
         }
 
-        System.out.println(removeNode.getName());
+        assigmentTaskWorker.put(removeNode, w);
+        System.out.println("worker " + w.getName() + " begin "+ removeNode.getName());
 
         currentAndFinishTask.put(removeNode, removeNode.getTimeExec());
         availableTask.remove(removeNode);

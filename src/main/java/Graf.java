@@ -688,6 +688,10 @@ class Graf {
         String grafToDot = "";
         grafToDot = "}\n" + grafToDot;
 
+        for(Node n:getAllNodes()) {
+            grafToDot = n.getNumber() + "[xlabel=\"[" + n.getEarliestTime() + "|" + n.getLatestTime() +"]\""+ "];\n" + grafToDot;
+        }
+
         for (Edge e : getAllEdges()) {
             grafToDot = "	" + e.printEdge() + ";\n" + grafToDot;
         }

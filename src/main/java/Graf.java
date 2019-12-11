@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 import java.lang.Math;
 
 /**
- * The class Graf is used to represent a directed graph
+ * The class Graf is used to represent a directed graph used to represent a PERT chart
  * A Graf have 2 attributs :
  * <ul>
  * <li>adjList is a Map< Node, SortedSet< Edge >> which represent de adjacency list of the graph</li>
@@ -65,7 +65,7 @@ class Graf {
     public Graf(String name) {
         this.name = name;
         this.adjList = new TreeMap<Node, SortedSet<Edge>>();
-        this.startNode = new Node(-99);
+        this.startNode = new Node(-1);
         addNode(startNode);
         this.totalTime = 0;
     }
@@ -116,7 +116,7 @@ class Graf {
 
 
     public void addEndNode() {
-        this.endNode = new Node(999);
+        this.endNode = new Node(getAllNodes().size()-1);
         addNode(endNode);
     }
 

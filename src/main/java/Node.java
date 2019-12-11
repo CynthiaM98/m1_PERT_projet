@@ -1,5 +1,5 @@
 /**
- * The class Node is used to be add into a graph
+ * The class Node is used to be add into a graph like a task for a PERT chart
  * A Node have 2 attributs :
  * <ul>
  * <li>an integer for id</li>

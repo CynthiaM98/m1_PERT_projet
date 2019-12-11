@@ -1,5 +1,15 @@
-import java.util.ArrayList;
-import java.util.List;
+/**
+ * The class Worker is used to assign task to workers
+ * A Worker have 2 attributs :
+ * <ul>
+ * <li>a String for the name</li>
+ * <li>an Integer for the id</li>
+ * <li>a Node for the current Task</li>
+ * <li>a booleanto know if the worker is in work or not</li>
+ * </ul>
+ * @author Cynthia Maillard et Jérémy Thiébaud
+ * @version version 1.0
+ */
 
 public class Worker {
 
@@ -8,7 +18,7 @@ public class Worker {
     protected Node currentTask;
     protected boolean inWork;
 
-   
+
 
     public Worker(int id) {
         this.name = "Worker_"+id;

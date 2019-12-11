@@ -1,3 +1,16 @@
+/**
+ * The class Edge is used to be add into a graf to join two node
+ * A Node have 2 attributs :
+ * <ul>
+ * <li>a Node where begin the egde</li>
+ * <li>a Node where finish the edge</li>
+ * <li>a int for the weight</li>
+ * <li>a boolean to know if the edge is weighted</li>
+ * </ul>
+ * @author Cynthia Maillard et Jérémy Thiébaud
+ * @version version 1.0
+ */
+
 import java.util.Objects;
 
 class Edge implements Comparable<Edge>{

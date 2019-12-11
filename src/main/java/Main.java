@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
 
+
     private static int strat = 0;
     private static int amountOfWorkers = 0;
     private static ArrayList<Worker> listOfWorker = new ArrayList<Worker>();
@@ -15,11 +16,30 @@ public class Main {
     private static Map<Node, Integer> currentAndFinishTask = new HashMap<>();
     private static Set<Node> availableTask = new HashSet<>();
 
+
+    /**
+     * <b>main</b>
+     *
+     * Start the application and execute the function to print the menu
+     *
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         SwitchOperatedTextMenu();
 
     }
 
+
+    /**
+     * <b>Function readFile</b>
+     *
+     * Read the file and fill the map with informations
+     *
+     * @param path
+     *      The location of the file
+     *
+     * @return a Map which represent all informations into the file we read
+     *
+     */
     public static Map<String, ArrayList<String>> readFile(String path) throws IOException {
         Map<String, ArrayList<String>> mapInfoGraph = new HashMap<String, ArrayList<String>>();
         ArrayList<String> listInstr = new ArrayList<String>();
@@ -35,11 +55,33 @@ public class Main {
         return mapInfoGraph;
     }
 
+    /**
+     * <b>Function readLine</b>
+     *
+     * Parse a line with "," and fill the arrayList with each elements
+     *
+     * @param line
+     *      The line to parse
+     *
+     * @return ArrayList with each element from a line
+     *
+     */
     public static ArrayList<String> readLine(String line) {
         String[] values = line.split(",");
         return new ArrayList(Arrays.asList(values));
     }
 
+    /**
+     * <b>Function supprSpace</b>
+     *
+     * Delete space into string in an ArrayList of String
+     *
+     * @param listString
+     *      an ArrayList of string
+     *
+     * @return the ArrayList without space
+     *
+     */
     public static ArrayList<String> supprSpace(ArrayList<String> listString) {
         ArrayList<String> listWithoutSpace = new ArrayList<String>();
         for (String s : listString) {
@@ -48,6 +90,17 @@ public class Main {
         return listWithoutSpace;
     }
 
+    /**
+     * <b>Function construGraf</b>
+     *
+     * Create a graf from the map
+     *
+     * @param listInstr
+     *      the map which constain all information to create the graf
+     *
+     * @return the graf
+     *
+     */
     public static Graf construGraf(Map<String, ArrayList<String>> listInstr) {
 
         for (String s : listInstr.keySet()) {
@@ -74,6 +127,17 @@ public class Main {
         return addEndEdge(g);
     }
 
+    /**
+     * <b>Function addEndEdge</b>
+     *
+     * Add the end node into the graf and add edges that we need
+     *
+     * @param g
+     *      The graf where we add the end node
+     *
+     * @return the graf with the end node
+     *
+     */
     public static Graf addEndEdge(Graf g) {
         for (Node n : g.getAllNodes()) {
             List<Edge> listE = g.getOutEdges(n);
@@ -84,12 +148,32 @@ public class Main {
         return g;
     }
 
+    /**
+     * <b>Function findIdOfNode</b>
+     *
+     * Find the id of node from the name
+     *
+     * @param map
+     *      the map with all the node informations
+     *
+     * @param nameNode
+     *      The name of the node that we find
+     *
+     * @return the id of the node finded
+     *
+     */
     public static int findIdOfNode(Map<String, ArrayList<String>> map, String nameNode) {
         List<String> indexes = new ArrayList<String>(map.keySet());
         return indexes.indexOf(nameNode);
     }
 
 
+    /**
+     * <b>Function SwitchOperatedTextMenu</b>
+     *
+     * The menu print into the console to interact between the application and the user
+     *
+     */
     public static void SwitchOperatedTextMenu() throws InterruptedException, IOException {
         System.out.print("Choose menu item:\n");
         Scanner menuChoiceScan = new Scanner(System.in);
@@ -102,8 +186,8 @@ public class Main {
         System.out.println("5. Compute and display the earliest and latest start times of each task");
         System.out.println("6. Compute and display a critical path");
         System.out.println("7. Compute the assignment strategy n°1 : Critical path");
-        System.out.println("8. Compute the assignment strategy n°2 : ");
-        System.out.println("9. Compute the assignment strategy n°3 :");
+        System.out.println("8. Compute the assignment strategy n°2 : Minimum time execution first");
+        System.out.println("9. Compute the assignment strategy n°3 : Maximum time execution first");
         System.out.println("10. Compute the assignment strategy n°4 : Random assignment");
         System.out.println("11. Display one more time this menu");
         System.out.println("0. Quit this application");
@@ -192,7 +276,7 @@ public class Main {
                         else {
                             for (Node node : critList) {
                                 System.out.println(node.toString());
-                            } //TODO Change display skin ?
+                            }
                         }
                         System.out.println("Done \n ----------------------------------\n");
                     } else {
@@ -218,7 +302,7 @@ public class Main {
                 case 8:
                     if (init) {
                         strat = 2;
-                        System.out.println("You've chosen option #8 : Compute the assignment strategy n°2 : \"\n");
+                        System.out.println("You've chosen option #8 : Compute the assignment strategy n°2 : Minimum time execution first\n");
                         System.out.print("Please enter the first number of workers you want to assign\n");
                         amountOfWorkers = menuScan.nextInt();
                         createListWorker(amountOfWorkers);
@@ -234,7 +318,7 @@ public class Main {
                 case 9:
                     if (init) {
                         strat = 3;
-                        System.out.println("You've chosen option #9 : Compute the assignment strategy n°3 :\n");
+                        System.out.println("You've chosen option #9 : Compute the assignment strategy n°3 : Maximum time execution first\n");
                         System.out.print("Please enter the first number of workers you want to assign\n");
                         amountOfWorkers = menuScan.nextInt();
                         createListWorker(amountOfWorkers);
@@ -270,8 +354,8 @@ public class Main {
                     System.out.println("5. Compute and display the earliest and latest start times of each task");
                     System.out.println("6. Compute and display a critical path");
                     System.out.println("7. Compute the assignment strategy n°1 : Critical path");
-                    System.out.println("8. Compute the assignment strategy n°2 : ici");
-                    System.out.println("9. Compute the assignment strategy n°3 : ");
+                    System.out.println("8. Compute the assignment strategy n°2 : Minimum time execution first");
+                    System.out.println("9. Compute the assignment strategy n°3 : Maximum time execution first");
                     System.out.println("10. Compute the assignment strategy n°4 : Random assignment");
                     System.out.println("11. Display one more time this menu");
                     System.out.println("0. Quit this application");
@@ -289,6 +373,16 @@ public class Main {
         System.out.println("Bye-bye!");
     }
 
+    /**
+     * <b>Function createListWorker</b>
+     *
+     * Get the number of worker and create an arrayList of workers
+     *
+     * @param amountOfWorkers
+     *      The number of workers choose by the user
+     *
+     * @return the arrayList with all workers
+     */
 
     public static void createListWorker(int amountOfWorkers){
         for (int i = 0; i < amountOfWorkers; i++){
@@ -296,6 +390,15 @@ public class Main {
         }
     }
 
+    /**
+     * <b>Function execStrategie</b>
+     *
+     * In this function we manage 2 list of task : available task and current and finished tasks
+     *
+     * We have a loop, each iteration represent a time in the execution of the pert chart since all task are finished
+     * If a task finish during the loop, we free the worker who works this task and we assign it a new task
+     *
+     */
     public static void execStrategie() throws InterruptedException {
         currentAndFinishTask.clear();
         totalTime = 0;
@@ -341,6 +444,14 @@ public class Main {
 
     }
 
+
+
+    /**
+     * <b>Function workerAvailable</b>
+     *
+     * Used to know is there are workers available to work
+     *
+     */
     public static boolean workerAvailable(){
         for (Worker w : listOfWorker){
             if (!w.isInWork()){
@@ -350,11 +461,32 @@ public class Main {
         return false;
     }
 
+    /**
+     * <b>Function taskWorkerFinish</b>
+     *
+     * Used to finish a task and free the worker
+     *
+     * @param w
+     *      The worker who work for this task
+     *
+     * @param n
+     *      The node which represent the task
+     *
+     */
+
     public static void taskWorkerFinish(Worker w, Node n){
         w.setInWork(false);
         System.out.println(w.getName() + " finish "+ n.getName());
     }
 
+
+    /**
+     * <b>Function getFreeWorker</b>
+     *
+     * Used to find a free worker to begin a new task
+     *
+     * @return a free worker if exists
+     */
     public static Worker getFreeWorker(){
         for (Worker w : listOfWorker) {
             if(!w.inWork){
@@ -364,6 +496,14 @@ public class Main {
         return null;
     }
 
+
+    /**
+     * <b>Function allTaskDone</b>
+     *
+     * Used to know if all task are done
+     *
+     * @return a boolean
+     */
     public static boolean allTaskDone() {
         for (Node n : currentAndFinishTask.keySet()) {
             if (currentAndFinishTask.get(n) != 0) {
@@ -374,6 +514,13 @@ public class Main {
         return true && availableTask.isEmpty();
     }
 
+
+    /**
+     * <b>Function affectWorker</b>
+     *
+     * Assign a worker to a task depends of the strategy choose by the user
+     *
+     */
     public static void affectWorker(Worker w){
         Node removeNode = null;
         w.setInWork(true);
@@ -434,6 +581,17 @@ public class Main {
     }
 
 
+
+    /**
+     * <b>Function addSuccessor</b>
+     *
+     * Used to find new task to add in the list of available tasks which are succesor of a current node
+     *
+     * @param n
+     *      Is the node which is finish and from it we search successor node to return
+     *
+     * @return a Set of Node which represent available task
+     */
     public static Set<Node> addSuccessor(Node n) {
         Set<Node> childrensToAdd = new HashSet<>();
 

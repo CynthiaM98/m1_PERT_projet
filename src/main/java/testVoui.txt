@@ -1,0 +1,13 @@
+V, Analyse, 1, -
+O, Algebra, 12, -
+U, Database, 15, -
+I, Web, 5, -
+N, Architecture, 5, V
+Y, Systems, 3, O
+K, Arts, 4, U
+E, Comedy, 10, I
+A, Baseball, 1, N, Y
+B, Sorcellery, 4, K, E
+C, Geology, 8, A, B, N
+D, Networking, 8, A, B
+F, Unemployment, 1, C, D, N

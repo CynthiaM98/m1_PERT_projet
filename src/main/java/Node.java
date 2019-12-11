@@ -122,7 +122,14 @@ class Node implements Comparable<Node> {
      * @return the number and the name of the node in a String
      */
     public String toString() {
-        String ret = "[" + number + "]";
+        String ret = "";
+        if(number == -99){
+            ret = "[start]";
+        }else if (number == 999){
+            ret = "[end]";
+        }else {
+            ret = "[" + number + "]";
+        }
         if (name != null) {
             ret += " " + name;
         }

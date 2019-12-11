@@ -1,5 +1,8 @@
+//./src/main/java/test.txt
+
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
@@ -12,19 +15,8 @@ public class Main {
     private static Map<Node, Integer> currentAndFinishTask = new HashMap<>();
     private static Set<Node> availableTask = new HashSet<>();
 
-    public static void main(String[] args) throws IOException {
-
-        /*Map<String, ArrayList<String>> listConstruGraph = readFile("./src/main/java/testCours.txt");
-        Graf g = construGraf(listConstruGraph);
-        System.out.println(g.toDotString());
-        g.printNodeTime();
-        ArrayList<Node> critList = g.getCriticalPathList();
-        for (Node node : critList) {
-            System.out.println(node.toString());
-        }
-*/
+    public static void main(String[] args) throws IOException, InterruptedException {
         SwitchOperatedTextMenu();
-
 
     }
 
@@ -98,7 +90,7 @@ public class Main {
     }
 
 
-    public static void SwitchOperatedTextMenu() {
+    public static void SwitchOperatedTextMenu() throws InterruptedException {
         System.out.print("Choose menu item:\n");
         Scanner menuChoiceScan = new Scanner(System.in);
         // print menu
@@ -138,6 +130,8 @@ public class Main {
                     } catch (IOException e) {
                         System.out.println(e.getMessage());
                     }
+                    myGraph.setEarliestTimeNode();
+                    myGraph.setLatestTimeNode();
                     init = true;
                     System.out.println("Done \n ----------------------------------\n");
                     break;
@@ -300,7 +294,7 @@ public class Main {
         }
     }
 
-    public static void execStrategie() {
+    public static void execStrategie() throws InterruptedException {
         currentAndFinishTask.clear();
         totalTime = 0;
 
@@ -314,6 +308,9 @@ public class Main {
         int workersWaiting = amountOfWorkers;
 
         while (!allTaskDone()) {
+            TimeUnit.SECONDS.sleep(1);
+            System.out.println("-----------------------");
+            System.out.println("Time : " + totalTime);
 
             for (Node n : currentAndFinishTask.keySet()) {
                 if (currentAndFinishTask.get(n) == 0) {
@@ -324,7 +321,7 @@ public class Main {
 
                 if (currentAndFinishTask.get(n) == 0) {
                     workersWaiting++;
-                    taskWorkerFinish(assigmentTaskWorker.get(n));
+                    taskWorkerFinish(assigmentTaskWorker.get(n), n);
                     assigmentTaskWorker.remove(n);
                     availableTask.addAll(addSuccessor(n));
                 }
@@ -351,8 +348,9 @@ public class Main {
         return false;
     }
 
-    public static void taskWorkerFinish(Worker w){
+    public static void taskWorkerFinish(Worker w, Node n){
         w.setInWork(false);
+        System.out.println(w.getName() + " finish "+ n.getName());
     }
 
     public static Worker getFreeWorker(){
@@ -426,7 +424,7 @@ public class Main {
         }
 
         assigmentTaskWorker.put(removeNode, w);
-        System.out.println("worker " + w.getName() + " begin "+ removeNode.getName());
+        System.out.println(w.getName() + " begin "+ removeNode.getName());
 
         currentAndFinishTask.put(removeNode, removeNode.getTimeExec());
         availableTask.remove(removeNode);

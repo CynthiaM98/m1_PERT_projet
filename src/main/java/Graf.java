@@ -663,10 +663,17 @@ class Graf {
 
 
     public void printNodeTime() {
-        this.setEarliestTimeNode();
-        this.setLatestTimeNode();
         for (Node node : getAllNodes()) {
-            System.out.println(" [ " + node.getNumber() + "] " + "E : " + node.getEarliestTime() + " / L :" + node.getLatestTime() + "\n");
+            if(node.equals(startNode)){
+                System.out.println(" [Start Node] " + "E : " + node.getEarliestTime() + " / L :" + node.getLatestTime() + "\n");
+
+            }else if(node.equals(endNode)){
+                System.out.println(" [ Final Node ] " + "E : " + node.getEarliestTime() + " / L :" + node.getLatestTime() + "\n");
+
+            }else {
+                System.out.println(" [ " + node.getNumber() + "] " + "E : " + node.getEarliestTime() + " / L :" + node.getLatestTime() + "\n");
+
+            }
         }
     }
 

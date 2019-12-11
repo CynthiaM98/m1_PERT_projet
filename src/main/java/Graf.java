@@ -701,12 +701,13 @@ class Graf {
      * <p>
      * Create the dot file from the function toDotString
      */
-    public void toDotFile(String path) {
-        try {
-            Files.write(Paths.get(path), toDotString().getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void toDotFile(String name) throws IOException {
+
+        String fileContent = toDotString();
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter(name));
+        writer.write(fileContent);
+        writer.close();
     }
 
 

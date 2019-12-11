@@ -90,7 +90,7 @@ public class Main {
     }
 
 
-    public static void SwitchOperatedTextMenu() throws InterruptedException {
+    public static void SwitchOperatedTextMenu() throws InterruptedException, IOException {
         System.out.print("Choose menu item:\n");
         Scanner menuChoiceScan = new Scanner(System.in);
         // print menu
@@ -150,8 +150,10 @@ public class Main {
                     if (init) {
                         System.out.println("You've chosen option #3 : Save the graph as a file\n");
                         System.out.println("Please enter the desired location of the DOT file \n");
-                        String dotFileLocation = menuChoiceScan.nextLine();
+                        Scanner pathReader = new Scanner(System.in);
+                        String dotFileLocation = pathReader.nextLine();
                         myGraph.toDotFile(dotFileLocation);
+                        pathReader.reset();
                         System.out.println("Done \n ----------------------------------\n");
                     } else {
                         System.out.println("Error: Please ask for the creation of an empty graph first (option #1 in the menu)");

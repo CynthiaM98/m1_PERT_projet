@@ -19,21 +19,47 @@ public class Worker {
     protected boolean inWork;
 
 
-
+    /**
+     * <b> Constuctor Worker</b>
+     *
+     * Creates and edge between the two nodes in parameters
+     *
+     * @param id id of the worker
+     */
     public Worker(int id) {
         this.name = "Worker_"+id;
         this.id = id;
         this.inWork = false;  
     }
 
+    /**
+     * <b>Function isInWork </b>
+     *
+     * return the work state of the worker
+     *
+     * @return the work state of the worker
+     */
     public boolean isInWork() {
         return inWork;
     }
 
+
+    /**
+     * <b>Function setInWork </b>
+     *
+     * set the work state of the worker
+     *
+     */
     public void setInWork(boolean inWork) {
         this.inWork = inWork;
     }
 
+    /**
+     * <b>Function setCurrentTask </b>
+     *
+     * set the current task of the worker
+     *
+     */
     public void setCurrentTask(Node n){
         this.currentTask = n;
     }

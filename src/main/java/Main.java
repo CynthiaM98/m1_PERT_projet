@@ -11,7 +11,7 @@ public class Main {
     private static int amountOfWorkers = 0;
     private static ArrayList<Worker> listOfWorker = new ArrayList<Worker>();
     private static Map<Node, Worker> assigmentTaskWorker = new HashMap<>();
-    private static int totalTime = 0;
+    private static int totalDuration = 0;
     private static Graf g = new Graf();
     private static Map<Node, Integer> currentAndFinishTask = new HashMap<>();
     private static Set<Node> availableTask = new HashSet<>();
@@ -292,7 +292,7 @@ public class Main {
                         amountOfWorkers = menuScan.nextInt();
                         createListWorker(amountOfWorkers);
                         execStrategie();
-                        System.out.println("Total time of the execution : " + totalTime);
+                        System.out.println("Total time of the execution : " + totalDuration);
                         System.out.println("Done \n ----------------------------------\n");
                     } else {
                         System.out.println("Error: Please ask for the creation of an empty graph first (option #1 in the menu)");
@@ -307,7 +307,7 @@ public class Main {
                         amountOfWorkers = menuScan.nextInt();
                         createListWorker(amountOfWorkers);
                         execStrategie();
-                        System.out.println("Total time of the execution : " + totalTime);
+                        System.out.println("Total time of the execution : " + totalDuration);
                         System.out.println("Done \n ----------------------------------\n");
                     } else {
                         System.out.println("Error: Please ask for the creation of an empty graph first (option #1 in the menu)");
@@ -323,7 +323,7 @@ public class Main {
                         amountOfWorkers = menuScan.nextInt();
                         createListWorker(amountOfWorkers);
                         execStrategie();
-                        System.out.println("Total time of the execution : " + totalTime);
+                        System.out.println("Total time of the execution : " + totalDuration);
                         System.out.println("Done \n ----------------------------------\n");
                     } else {
                         System.out.println("Error: Please ask for the creation of an empty graph first (option #1 in the menu)");
@@ -338,7 +338,7 @@ public class Main {
                         amountOfWorkers = menuScan.nextInt();
                         createListWorker(amountOfWorkers);
                         execStrategie();
-                        System.out.println("Total time of the execution : " + totalTime);
+                        System.out.println("Total time of the execution : " + totalDuration);
                         System.out.println("Done \n ----------------------------------\n");
                     } else {
                         System.out.println("Error: Please ask for the creation of an empty graph first (option #1 in the menu)");
@@ -401,21 +401,18 @@ public class Main {
      */
     public static void execStrategie() throws InterruptedException {
         currentAndFinishTask.clear();
-        totalTime = 0;
-
-
-        for (Edge e : g.getOutEdges(g.getStartNode())) {
-            availableTask.add(e.getNodeTo());
+        totalDuration = 0;
+        for (Node node : g.getSuccessors(g.getStartNode())) {
+            availableTask.add(node);
         }
         currentAndFinishTask.put(g.getEndNode(), 0);
         currentAndFinishTask.put(g.getStartNode(), 0);
-
         int workersWaiting = amountOfWorkers;
 
         while (!allTaskDone()) {
             TimeUnit.SECONDS.sleep(1);
             System.out.println("-----------------------");
-            System.out.println("Time : " + totalTime);
+            System.out.println("Time : " + totalDuration);
 
             for (Node n : currentAndFinishTask.keySet()) {
                 if (currentAndFinishTask.get(n) == 0) {
@@ -437,14 +434,13 @@ public class Main {
                 workersWaiting--;
             }
             if(workersWaiting < amountOfWorkers){
-                totalTime++;
+                totalDuration++;
             }
 
         }
 
     }
-
-
+    
 
     /**
      * <b>Function workerAvailable</b>
@@ -522,66 +518,56 @@ public class Main {
      *
      */
     public static void affectWorker(Worker w){
-        Node removeNode = null;
+        Node task = null;
         w.setInWork(true);
         switch (strat) {
             case 1 : //critical path
                 ArrayList<Node> critiPath = g.getCriticalPathList();
-
                 for(Node n : availableTask){
                     if (critiPath.contains(n)) {
-                        removeNode = n;
+                        task = n;
                         break;
                     }
                 }
-
-                if (removeNode != null) {
+                if (task != null) {
                     break;
                 }
             case 2 : //choose node with minimal time exec first
-                removeNode = availableTask.iterator().next();
-
+                task = availableTask.iterator().next();
                 for (Node n : availableTask) {
-                    if (n.getTimeExec() < removeNode.getTimeExec()) {
-                        removeNode = n;
+                    if (n.getTimeExec() < task.getTimeExec()) {
+                        task = n;
                     }
                 }
                 break;
 
             case 3 :  //choose node with maximal time exec first
-                removeNode = availableTask.iterator().next();
-
+                task = availableTask.iterator().next();
                 for (Node n : availableTask) {
-                    if (n.getTimeExec() > removeNode.getTimeExec()) {
-                        removeNode = n;
+                    if (n.getTimeExec() > task.getTimeExec()) {
+                        task = n;
                     }
                 }
                 break;
             case 4 : //Random
-
                 int rand = (int) Math.random() * availableTask.size();
                 int cmp = 0;
                 for (Node n : availableTask) {
                     if (cmp == rand) {
-                        removeNode = n;
+                        task = n;
                     }
                     cmp++;
                 }
                 break;
-
-
         }
+        assigmentTaskWorker.put(task, w);
+        System.out.println(w.getName() + " begin "+ task.getName());
 
-        assigmentTaskWorker.put(removeNode, w);
-        System.out.println(w.getName() + " begin "+ removeNode.getName());
-
-        currentAndFinishTask.put(removeNode, removeNode.getTimeExec());
-        availableTask.remove(removeNode);
+        currentAndFinishTask.put(task, task.getTimeExec());
+        availableTask.remove(task);
 
     }
-
-
-
+    
     /**
      * <b>Function addSuccessor</b>
      *
@@ -593,29 +579,23 @@ public class Main {
      * @return a Set of Node which represent available task
      */
     public static Set<Node> addSuccessor(Node n) {
-        Set<Node> childrensToAdd = new HashSet<>();
+        Set<Node> toAddSuccessor = new HashSet<>();
 
-        for (Edge oe : g.getOutEdges(n)) {
-            if (currentAndFinishTask.containsKey(oe.getNodeTo())) {
+        for (Node nextNode : g.getSuccessors(n)) {
+            if (currentAndFinishTask.containsKey(nextNode)) {
                 continue;
             }
-
             boolean ready = true;
-
-            for (Edge ie : g.getInEdges(oe.getNodeTo())) {
-                if (!currentAndFinishTask.containsKey(ie.getNodeFrom()) || currentAndFinishTask.get(ie.getNodeFrom()) != 0) {
+            for (Edge inEdge : g.getInEdges(nextNode)) {
+                if (!currentAndFinishTask.containsKey(inEdge.getNodeFrom()) || currentAndFinishTask.get(inEdge.getNodeFrom()) != 0) {
                     ready = false;
                     break;
                 }
             }
-
             if (ready) {
-                childrensToAdd.add(oe.getNodeTo());
+                toAddSuccessor.add(nextNode);
             }
-
         }
-
-        return childrensToAdd;
+        return toAddSuccessor;
     }
-
 }

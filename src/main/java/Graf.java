@@ -1,10 +1,7 @@
-import javafx.collections.transformation.SortedList;
-
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.lang.Math;
 
 /**
  * The class Graf is used to represent a directed graph used to represent a PERT chart
@@ -21,26 +18,51 @@ import java.lang.Math;
 class Graf {
 
     protected Map<Node, SortedSet<Edge>> adjList;
-
     protected String name;
-
     protected Node startNode;
     protected Node endNode;
-
     protected int totalTime;
 
+    /**
+     * <b> Getter the name of the graf</b>
+     * <p>
+     * Return the name of the graf
+     *
+     * @return the name of the graf
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * <b> Getter the first node of the graf</b>
+     * <p>
+     * Return the first node of the graf
+     *
+     * @return the first node of the graf
+     */
     public Node getStartNode() {
         return startNode;
     }
 
+    /**
+     * <b> Getter the last node of the graf</b>
+     * <p>
+     * Return the last node of the graf
+     *
+     * @return the last node of the graf
+     */
     public Node getEndNode() {
         return endNode;
     }
 
+    /**
+     * <b> Getter the total construction time of the graf</b>
+     * <p>
+     * Return the total construction time of the graf
+     *
+     * @return the total construction time of the graf
+     */
     public int getTotalTime() {
         return totalTime;
     }
@@ -70,24 +92,6 @@ class Graf {
         this.totalTime = 0;
     }
 
-    /**
-     * <b>Builder graf</b>
-     * <p>
-     * Create a graf with the adjacency array given
-     * List of int which represent the adjacency array of the graf
-     */
-    /*public Graf(int... args){
-        this();
-        int nbNode = 1;
-        for (int i = 0; i < args.length ; i++) {
-            if(args[i] == 0){
-                nbNode++;
-                addNode(new Node(nbNode));
-            }else{
-                addEdge(new Node(nbNode), new Node(args[i]));
-            }
-        }
-    }*/
     public Map<Node, SortedSet<Edge>> getAdjList() {
         return adjList;
     }
@@ -116,7 +120,7 @@ class Graf {
 
 
     public void addEndNode() {
-        this.endNode = new Node(getAllNodes().size()-1);
+        this.endNode = new Node(getAllNodes().size() - 1);
         addNode(endNode);
     }
 
@@ -143,11 +147,9 @@ class Graf {
     public void removeNode(Node n) {
         if (adjList.containsKey(n)) {
             List<Edge> edges = getIncidentEdges(n);
-
             for (Edge e : edges) {
                 removeEdge(e);
             }
-
             adjList.remove(n);
         }
 
@@ -188,11 +190,9 @@ class Graf {
         if (!adjList.containsKey(nTo)) {
             adjList.put(nTo, new TreeSet<Edge>());
         }
-
         if (!adjList.containsKey(nFrom)) {
             adjList.put(nFrom, new TreeSet<Edge>());
         }
-
         adjList.get(nFrom).add(new Edge(nFrom, nTo));
 
     }
@@ -211,11 +211,9 @@ class Graf {
         if (!adjList.containsKey(nTo)) {
             adjList.put(nTo, new TreeSet<Edge>());
         }
-
         if (!adjList.containsKey(nFrom)) {
             adjList.put(nFrom, new TreeSet<Edge>());
         }
-
         adjList.get(nFrom).add(new Edge(nFrom, nTo, weight));
 
     }
@@ -245,7 +243,6 @@ class Graf {
     public void removeEdge(int idNodeFrom, int idNodeTo) {
         Node nFrom = new Node(idNodeFrom);
         Node nTo = new Node(idNodeTo);
-
         removeEdge(nFrom, nTo);
     }
 
@@ -270,11 +267,9 @@ class Graf {
      */
     public List<Node> getSuccessors(Node n) {
         List<Node> listSuccessors = new ArrayList<Node>();
-
         for (Edge e : adjList.get(n)) {
             listSuccessors.add(e.getNodeTo());
         }
-
         return listSuccessors;
     }
 
@@ -304,7 +299,6 @@ class Graf {
         for (Edge e : adjList.get(n)) {
             listE.add(e);
         }
-
         return listE;
     }
 
@@ -331,7 +325,6 @@ class Graf {
      */
     public List<Edge> getInEdges(Node n) {
         List<Edge> listE = new ArrayList<>();
-
         for (Node node : adjList.keySet()) {
             for (Edge e : adjList.get(node)) {
                 if (e.getNodeTo().equals(n)) {
@@ -365,17 +358,13 @@ class Graf {
      */
     public List<Edge> getIncidentEdges(Node n) {
         List<Edge> listOutEdge = getOutEdges(n);
-
         List<Edge> listInEdge = getInEdges(n);
-
-        //pour éviter doublons si edge qui boucle sur le même noeud
         ListIterator<Edge> iter = listInEdge.listIterator();
         while (iter.hasNext()) {
             if (n.equals(iter.next().getNodeFrom())) {
                 iter.remove();
             }
         }
-
         listOutEdge.addAll(listInEdge);
 
         return listOutEdge;
@@ -416,12 +405,9 @@ class Graf {
      */
     public List<Edge> getAllEdges() {
         List<Edge> listE = new ArrayList<>();
-
         for (Node n : getAllNodes()) {
             listE.addAll(getOutEdges(n));
         }
-
-
         return listE;
     }
 
@@ -437,18 +423,14 @@ class Graf {
         Graf gT = new Graf();
         List<Node> listNode = new ArrayList<Node>();
         listNode = getAllNodes();
-
         for (Node n : listNode) {
             gT.addNode(n);
         }
-
         for (Node n : listNode) {
             for (Edge e : adjList.get(n)) {
-                //System.out.println(e.getWeight());
                 gT.addEdge(e.getNodeTo(), e.getNodeFrom(), e.getWeight());
             }
         }
-
         return gT;
     }
 
@@ -461,22 +443,16 @@ class Graf {
      */
     public Graf getTransitiveClosure() {
         Graf g = new Graf();
-
         for (Node n : getAllNodes()) {
             g.addNode(n);
         }
-
         for (Edge e : getAllEdges()) {
             g.addEdge(e.getNodeFrom(), e.getNodeTo());
         }
-
         for (Node n : g.getAllNodes()) {
             List<Node> nodesToGoTo = new ArrayList<>();
-
             getDFSrec(n, nodesToGoTo);
-
             nodesToGoTo.remove(n);
-
             for (Node nodeToGoTo : nodesToGoTo) {
                 g.addEdge(n, nodeToGoTo);
             }
@@ -508,7 +484,6 @@ class Graf {
 
         List<Node> listDFS = new ArrayList<>();
         getDFSrec(n, listDFS);
-
         return listDFS;
     }
 
@@ -557,7 +532,6 @@ class Graf {
         List<Node> listBFS = new ArrayList<>();
         listBFS.add(n);
         getBFSrec(n, listBFS);
-
         return listBFS;
     }
 
@@ -585,7 +559,6 @@ class Graf {
                 listBFS.add(e.getNodeTo());
             }
         }
-
         for (Edge e : childrens) {
             getBFSrec(e.getNodeTo(), listBFS);
         }
@@ -596,7 +569,6 @@ class Graf {
         List<Edge> listE = getOutEdges(nFrom);
         for (Edge e : listE) {
             if (nTo.equals(e.getNodeTo())) {
-                //System.out.println(e.getWeight());
                 return e.getWeight();
             }
         }
@@ -614,11 +586,8 @@ class Graf {
                 node.setEarliestTime(-0xfffffe);
             }
         }
-
         int nbIter = 1;
         boolean modified = true;
-
-
         while (nbIter < nodeTime.size() + 1 && modified) {
             modified = false;
             for (Edge e : getAllEdges()) {
@@ -636,15 +605,12 @@ class Graf {
 
     public void setLatestTimeNode() {
         Graf reverseGraf = getReverseGraph();
-
         List<Node> nodeTime = reverseGraf.getAllNodes();
         //init
         for (Node node : nodeTime) {
             node.setLatestTime(totalTime);
         }
-
         int distance = 0;
-
         for (Node node : nodeTime) {
             for (Node succ : reverseGraf.getSuccessors(node)) {
                 distance = reverseGraf.getWeightOfEdge(node, succ);
@@ -652,25 +618,21 @@ class Graf {
                     succ.setLatestTime(node.getLatestTime() - distance);
                 }
             }
-
-
         }
-
         Graf g = reverseGraf.getReverseGraph();
         this.adjList = g.getAdjList();
-
     }
 
 
     public void printNodeTime() {
         for (Node node : getAllNodes()) {
-            if(node.equals(startNode)){
+            if (node.equals(startNode)) {
                 System.out.println(" [Start Node] " + "E : " + node.getEarliestTime() + " / L :" + node.getLatestTime() + "\n");
 
-            }else if(node.equals(endNode)){
+            } else if (node.equals(endNode)) {
                 System.out.println(" [ Final Node ] " + "E : " + node.getEarliestTime() + " / L :" + node.getLatestTime() + "\n");
 
-            }else {
+            } else {
                 System.out.println(" [ " + node.getNumber() + "] " + "E : " + node.getEarliestTime() + " / L :" + node.getLatestTime() + "\n");
 
             }
@@ -688,8 +650,8 @@ class Graf {
         String grafToDot = "";
         grafToDot = "}\n" + grafToDot;
 
-        for(Node n:getAllNodes()) {
-            grafToDot = n.getNumber() + "[xlabel=\"[" + n.getEarliestTime() + "|" + n.getLatestTime() +"]\""+ "];\n" + grafToDot;
+        for (Node n : getAllNodes()) {
+            grafToDot = n.getNumber() + "[xlabel=\"[" + n.getEarliestTime() + "|" + n.getLatestTime() + "]\"" + "];\n" + grafToDot;
         }
 
         for (Edge e : getAllEdges()) {
@@ -728,11 +690,9 @@ class Graf {
         if (o == null) {
             return false;
         }
-
         if (this.getClass() != o.getClass()) {
             return false;
         }
-
         Graf g = (Graf) o;
 
         for (Node n : g.getAllNodes()) {
@@ -740,25 +700,21 @@ class Graf {
                 return false;
             }
         }
-
         for (Node n : getAllNodes()) {
             if (!g.getAllNodes().contains(n)) {
                 return false;
             }
         }
-
         for (Edge e : g.getAllEdges()) {
             if (!getAllEdges().contains(e)) {
                 return false;
             }
         }
-
         for (Edge e : getAllEdges()) {
             if (!g.getAllEdges().contains(e)) {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -775,12 +731,26 @@ class Graf {
     }
 
 
+    /**
+     * <b>Function getCriticalPathList</b>
+     * <p>
+     * Give the critical path of the current graf
+     *
+     * @return the list of nodes which represents the critical path
+     */
     public ArrayList<Node> getCriticalPathList() {
         ArrayList<Node> res = new ArrayList<>();
         res.add(startNode);
         return getCriticalRecursivity(startNode, res);
     }
 
+    /**
+     * <b>Function getCriticalRecursivity</b>
+     * <p>
+     * Give the critical path of the current graf recursively
+     *
+     * @return the list of nodes which represents the critical path
+     */
     public ArrayList<Node> getCriticalRecursivity(Node n, ArrayList<Node> res) {
         for (Edge e : this.getOutEdges(n)) {
             if (e.getNodeTo().getEarliestTime() == e.getNodeTo().getLatestTime()) {
@@ -792,6 +762,4 @@ class Graf {
     }
 
 
-
-
-    }
+}
